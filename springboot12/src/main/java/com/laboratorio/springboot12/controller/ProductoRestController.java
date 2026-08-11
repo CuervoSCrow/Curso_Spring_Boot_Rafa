@@ -19,7 +19,7 @@ public class ProductoRestController {
     private final ProductoService productoService;
 
 
-    @GetMapping("/producto/{id}")
+    @GetMapping("/productos/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
         Optional<Producto> producto = this.productoService.findById(id);
         if (producto.isEmpty()) {
@@ -38,13 +38,13 @@ public class ProductoRestController {
         return ResponseEntity.ok(productos);
     }
 
-    @PostMapping("/producto")
+    @PostMapping("/productos")
     public ResponseEntity<?> create(@RequestBody Producto producto) {
         try{
             Producto productoNuevo = this.productoService.create(producto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("{/id}")
-                    .buildAndExpand(productoNuevo)
+                    .buildAndExpand(productoNuevo.getCodigo())
                     .toUri();
             return ResponseEntity.created(location)
                     .body(productoNuevo);

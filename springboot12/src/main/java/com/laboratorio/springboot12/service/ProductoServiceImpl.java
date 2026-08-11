@@ -17,7 +17,7 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public Optional<Producto> findById(Integer id) {
-        return productoRepository.findById(id);
+        return this.productoRepository.findById(id);
     }
 
     @Override
@@ -27,15 +27,15 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public Producto create(Producto producto) {
-        if(producto.getPrecio()<3000){
-            throw new IllegalArgumentException("El precio debe ser mayor a 3000");
+        if(producto.getPrecio()>3000){
+            throw new InvalidDataException("El precio debe ser menor a 3000");
         }
         return this.productoRepository.save(producto);
     }
 
     @Override
     public Optional<Producto> update(Integer id, Producto producto) {
-        if(producto.getPrecio()<3000){
+        if(producto.getPrecio()>3000){
             throw new InvalidDataException("Precio Invalido");
         }
         Optional<Producto> productoModificar = findById(id);
