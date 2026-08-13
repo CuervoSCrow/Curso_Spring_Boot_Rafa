@@ -1,5 +1,6 @@
 package com.laboratorio.springboot14.modelo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +19,17 @@ public class Producto {
     @Column(name="categoria_id",nullable = false)
     private Integer categoriaId;
 
-    @Column(name = "nombre", nullable = false, length = 121)
+    @Column(nullable = false, length = 120,unique = true)
     private String nombre;
 
-    @Column(name = "precio", nullable = false)
+    @Column( nullable = false)
     private double precio;
 
     @Column(name="fecha_ingreso",nullable = false)
     private LocalDate fechaIngreso;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name="categoria_id",insertable = false,
                 updatable = false)
     private Categoria categoria;

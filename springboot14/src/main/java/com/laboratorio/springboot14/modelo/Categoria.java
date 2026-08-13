@@ -1,5 +1,6 @@
 package com.laboratorio.springboot14.modelo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,10 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre", nullable = false,
-            length = 50,unique = true)
+    @Column(nullable = false,length = 50,unique = true)
     private String nombre;
 
     @OneToMany(mappedBy = "categoria")
+    @JsonManagedReference
     private List<Producto> productos;
 }

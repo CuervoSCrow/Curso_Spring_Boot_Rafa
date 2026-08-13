@@ -52,7 +52,7 @@ public class ProductoController {
                     .body(e.getMessage());
         }catch(Exception e){
             return ResponseEntity.internalServerError()
-                    .body("Error inesperado");
+                    .body("Error inesperado "+e.getMessage());
 
         }
     }
