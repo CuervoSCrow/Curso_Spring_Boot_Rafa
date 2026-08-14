@@ -26,7 +26,7 @@ public class Runner implements CommandLineRunner {
         Optional<Producto> producto;
 
 //        Buscar un registro por nombre exacto
-        producto = this.productoRepository.findByNombre(nombre);
+        producto = this.productoRepository.findOneByNombre(nombre);
         if(producto.isEmpty()){
             log.info("No encontré el producto: "+nombre);
         }else{
