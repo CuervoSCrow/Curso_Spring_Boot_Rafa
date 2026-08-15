@@ -48,5 +48,14 @@ public class Runner implements CommandLineRunner {
             log.info("Producto: {}",p.toString());
         }
 
+        /*
+        int result = productoRepository.updateCategoriaProductos(3,1);
+        log.info("Se han modificado : {} registros",result);
+
+        result = productoRepository.deleteProductosByCategoria(1);
+        log.info("Se han eliminado: {} registros",result);
+*/
+        long result = productoRepository.deleteByCategoriaId(1);
+        log.info("Se han eliminado: {} registros",result);
     }
 }
