@@ -21,7 +21,7 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public List<Producto> findAll() {
-        return productoRepository.findAll();
+        return this.productoRepository.findAll();
     }
 
     @Override
