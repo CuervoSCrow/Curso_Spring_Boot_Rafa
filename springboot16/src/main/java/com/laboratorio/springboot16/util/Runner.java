@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -17,20 +18,65 @@ public class Runner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String nombre = "cable de red";
+        String nombre = "Cable de red";
         String buscar = "ble";
+        int result;
 
         log.info("Ejecutando Runner");
-        Optional<Producto> productos;
+        Optional<Producto> producto;
+        List<Producto> productos;
 
 //        Buscar un registro por nombre exacto
-        productos = this.productoRepository.findOneByNombre(nombre);
-        if(productos.isEmpty()){
+        producto = this.productoRepository.findOneByNombre(nombre);
+        if(producto.isEmpty()){
             log.info("No se encontro el producto con nombre: " + nombre);
         } else {
-            log.info("Producto encontrado: " + productos.get());
+            log.info("Producto encontrado: " + producto.get());
         }
 
+//      Buscar un registro por nombre Ignorando mayúsculas y minúsculas
+        producto = this.productoRepository.findOneByNombreIgnoreCase(nombre);
+        if(producto.isEmpty()){
+            log.info("No se encontro el producto con nombre: " + nombre);
+        } else {
+            log.info("Producto encontrado: " + producto.get());
+        }
 
+//       Buscar lista de registros que contenga la variable nombre,
+//        ignorando mayúsculas y minúsculas, Ordenando por nombre ascendente
+         productos =this.productoRepository
+                        .findByNombreContainingIgnoreCaseOrderByNombreAsc(buscar);
+        for(Producto p : productos){
+            log.info("Producto: " + p.toString());
+        }
+/*
+        int result = this.productoRepository.updateCategoriaProductos(2,3);
+        log.info("Se han modificado {} registros " , result);
+
+        result = productoRepository.deleteProductosByCategoria(2);
+        log.info("Se han eliminado {} registros " , result);
+
+        long result = this.productoRepository.deleteByCategoriaId(1);
+        log.info("Se han eliminado: {} registros  ", result);
+*/
+//        int result = this.productoRepository.updateCategoriaProductosSQL(1,2);
+//        log.info("Se han modificado {} registros " , result);//
+
+
+//        Consultas Nativas
+
+
+//      Busqueda findByCategoriaAndNombreSQL  =============================================
+        Integer categoriaId = 3;
+        nombre= "caBle";
+        productos = this.productoRepository.findByCategoriaAndNombreSQL(categoriaId, nombre);
+        for(Producto p : productos){
+
+            log.info("====== Producto: " + p.toString());
+        }
+
+//      Borrado deleteProductosByCategoriaSQL  =============================================
+        result = this.productoRepository.deleteProductosByCategoriaSQL(2);
+        log.info("Se han eliminado {} registros " , result);
     }
 }
