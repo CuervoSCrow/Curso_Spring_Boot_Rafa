@@ -1,0 +1,48 @@
+package com.laboratorio.springboot17.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "productos")
+@Getter @Setter @RequiredArgsConstructor
+public class Producto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer codigo;
+
+    @Column(name="categoria_id",nullable = false)
+    private Integer categoriaId;
+
+    @Column(name="nombre",nullable = false,
+            length = 120, unique = true)
+    private String nombre;
+
+    @Column(name="precio",nullable = false)
+    private Double precio;
+
+    @Column(name="fecha_ingreso",nullable = false)
+    private LocalDate fechaIngreso;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name="categoria_id",nullable = false,
+                insertable = false,updatable = false)
+    private Categoria categoria;
+
+    @Override
+    public String toString() {
+        return "Producto{" +
+                "codigo=" + codigo +
+                ", categoriaId=" + categoriaId +
+                ", nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", fechaIngreso=" + fechaIngreso +
+                '}';
+    }
+}
