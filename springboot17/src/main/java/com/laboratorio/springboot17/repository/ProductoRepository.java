@@ -100,4 +100,12 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
             """)
     List<ProductoRecord> findListadoProductosRecord();
 //    =====================================================================
+//    Recuperando datos en crudo Object====================================
+@Query("""
+            SELECT p.codigo, p.nombre, p.categoria.nombre
+                FROM Producto p
+                ORDER BY p.nombre ASC
+            """)
+List<Object[]> findListadoProductosObject();
+//    =====================================================================
 }
