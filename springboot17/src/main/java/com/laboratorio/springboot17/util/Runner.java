@@ -1,5 +1,6 @@
 package com.laboratorio.springboot17.util;
 
+import com.laboratorio.springboot17.dto.ProductoDTO;
 import com.laboratorio.springboot17.model.Producto;
 import com.laboratorio.springboot17.repository.ProductoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +94,7 @@ public class Runner implements CommandLineRunner {
 //        =====================================================================
 
 //       ========================== Consultas Nativas =========================
+        log.info("=========================== Consultas Nativas ===========================");
 
 //        Busqueda findByCategoriaAndNombreSQL ================================
         log.info("=========================== Busqueda findByCategoriaAndNombreSQL");
@@ -108,6 +110,21 @@ public class Runner implements CommandLineRunner {
         result = this.productoRepository.deleteByProductosByCategoriaIdSQL(1);
         log.info("Registros eliminados: " + result);
 
+//       =====================================================================
+//      Insertamos 4 registros
+
+        insertarRegistros();
+
+//        ====================== Proyecciones Personalizadas =========================
+        log.info("============= Proyecciones Personalizadas ========================");
+
+        log.info("************************************************");
+        log.info("\nEjemplo de proyeccion personalizada por constructor DTO ************");
+        log.info("************************************************");
+        List<ProductoDTO> productosDTO = this.productoRepository.findListadoProductos();
+        for(ProductoDTO p : productosDTO){
+            log.info("====== ProductoDTO: " + p.toString());
+        }
 //       =====================================================================
     }
     public void insertarRegistros(){
