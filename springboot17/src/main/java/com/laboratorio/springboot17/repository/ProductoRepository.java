@@ -1,6 +1,7 @@
 package com.laboratorio.springboot17.repository;
 
 import com.laboratorio.springboot17.dto.ProductoDTO;
+import com.laboratorio.springboot17.dto.ProductoProjection;
 import com.laboratorio.springboot17.dto.ProductoRecord;
 import com.laboratorio.springboot17.model.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -107,5 +108,15 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
                 ORDER BY p.nombre ASC
             """)
 List<Object[]> findListadoProductosObject();
+//    =====================================================================
+
+    //    =====================================================================
+//    Recuperando datos en crudo Object====================================
+    @Query("""
+            SELECT p.codigo AS codigo, p.nombre AS nombre , p.categoria.nombre AS categoria
+                FROM Producto p
+                ORDER BY p.nombre ASC
+            """)
+    List<ProductoProjection> findListadoProductosProjection();
 //    =====================================================================
 }

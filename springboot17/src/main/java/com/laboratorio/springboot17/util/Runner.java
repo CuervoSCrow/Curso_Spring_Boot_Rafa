@@ -1,6 +1,7 @@
 package com.laboratorio.springboot17.util;
 
 import com.laboratorio.springboot17.dto.ProductoDTO;
+import com.laboratorio.springboot17.dto.ProductoProjection;
 import com.laboratorio.springboot17.dto.ProductoRecord;
 import com.laboratorio.springboot17.model.Producto;
 import com.laboratorio.springboot17.repository.ProductoRepository;
@@ -142,7 +143,16 @@ public class Runner implements CommandLineRunner {
         for(Object[] p : productosObject){
             log.info("====== Producto Object:{ id: {},nombre: {},categoria: {} ", p[0], p[1], p[2]);
         }
-
+//       =====================================================================
+        log.info("********************************************************************");
+        log.info("Ejemplo de proyeccion personalizada usando closed projection *******");
+        log.info("********************************************************************");
+        List<ProductoProjection> productosProjection = this.productoRepository.findListadoProductosProjection();
+        for(ProductoProjection p : productosProjection){
+            log.info("====== Producto Projection:{ id: {},nombre: {},categoria: {} ",
+                    p.getCodigo(), p.getNombre(), p.getCategoria());
+        }
+//       =====================================================================
 
 
     }
