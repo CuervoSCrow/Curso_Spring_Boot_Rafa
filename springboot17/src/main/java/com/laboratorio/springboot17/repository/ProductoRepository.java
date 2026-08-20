@@ -1,6 +1,7 @@
 package com.laboratorio.springboot17.repository;
 
 import com.laboratorio.springboot17.dto.ProductoDTO;
+import com.laboratorio.springboot17.dto.ProductoRecord;
 import com.laboratorio.springboot17.model.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -81,13 +82,22 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 //    =====================================================================
 
 //    ==================== Cosultas Personalizadas =========================
+//    Usando Constructor DTOS  ==========================================
     @Query("""
             SELECT new com.laboratorio.springboot17.dto.ProductoDTO
                 (p.codigo, p.nombre, p.categoria.nombre)
                 FROM Producto p
                 ORDER BY p.nombre ASC
             """)
-    List<ProductoDTO> findListadoProductos();
+    List<ProductoDTO> findListadoProductosDTO();
 
+//    Usando Record DTOS ================================================
+    @Query("""
+            SELECT new com.laboratorio.springboot17.dto.ProductoRecord
+                (p.codigo, p.nombre, p.categoria.nombre)
+                FROM Producto p
+                ORDER BY p.nombre ASC
+            """)
+    List<ProductoRecord> findListadoProductosRecord();
 //    =====================================================================
 }

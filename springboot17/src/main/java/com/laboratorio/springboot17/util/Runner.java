@@ -1,6 +1,7 @@
 package com.laboratorio.springboot17.util;
 
 import com.laboratorio.springboot17.dto.ProductoDTO;
+import com.laboratorio.springboot17.dto.ProductoRecord;
 import com.laboratorio.springboot17.model.Producto;
 import com.laboratorio.springboot17.repository.ProductoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -118,14 +119,22 @@ public class Runner implements CommandLineRunner {
 //        ====================== Proyecciones Personalizadas =========================
         log.info("============= Proyecciones Personalizadas ========================");
 
-        log.info("************************************************");
-        log.info("\nEjemplo de proyeccion personalizada por constructor DTO ************");
-        log.info("************************************************");
-        List<ProductoDTO> productosDTO = this.productoRepository.findListadoProductos();
+        log.info("********************************************************************");
+        log.info("Ejemplo de proyeccion personalizada por constructor DTO ************");
+        log.info("********************************************************************");
+        List<ProductoDTO> productosDTO = this.productoRepository.findListadoProductosDTO();
         for(ProductoDTO p : productosDTO){
             log.info("====== ProductoDTO: " + p.toString());
         }
 //       =====================================================================
+        log.info("********************************************************************");
+        log.info("Ejemplo de proyeccion personalizada por constructor Record ************");
+        log.info("********************************************************************");
+        List<ProductoRecord> productosRecord = this.productoRepository.findListadoProductosRecord();
+        for(ProductoRecord p : productosRecord){
+            log.info("====== ProductoRecord : " + p.toString());
+        }
+
     }
     public void insertarRegistros(){
         List<String[]> datos = Arrays.asList(
