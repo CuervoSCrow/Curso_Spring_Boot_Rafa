@@ -134,6 +134,16 @@ public class Runner implements CommandLineRunner {
         for(ProductoRecord p : productosRecord){
             log.info("====== ProductoRecord : " + p.toString());
         }
+//       =====================================================================
+        log.info("********************************************************************");
+        log.info("Ejemplo de proyeccion personalizada usando datos en crudo **********");
+        log.info("********************************************************************");
+        List<Object[]> productosObject = this.productoRepository.findListadoProductosObject();
+        for(Object[] p : productosObject){
+            log.info("====== Producto Object:{ id: {},nombre: {},categoria: {} ", p[0], p[1], p[2]);
+        }
+
+
 
     }
     public void insertarRegistros(){
