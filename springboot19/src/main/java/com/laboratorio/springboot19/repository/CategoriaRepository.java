@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,4 +26,16 @@ public interface CategoriaRepository extends JpaRepository<Categoria,Integer> {
                 WHERE c.nombre = :nombre
             """)
     Optional<CategoriaResponse> findCategoriaResponseOneByNombre(@Param("nombre") String nombre);
+
+    @Query("""
+            SELECT new.com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
+            FROM Categorias c
+            ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findAllOrderByNombreAsc();
+
+//    SELECT new.com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
+//    FROM Categoria c
+//    WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
+//    ORDER BY c.nombre ASC
 }
