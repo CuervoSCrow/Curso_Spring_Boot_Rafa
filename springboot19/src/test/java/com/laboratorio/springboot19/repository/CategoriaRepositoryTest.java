@@ -42,7 +42,7 @@ public class CategoriaRepositoryTest {
     }
 
     @Test
-    void findByNombreContainingIgnoreCaseOrderByNombreAsc(){
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
         String infix="TeGo";
 
         List<CategoriaResponse> categorias =
