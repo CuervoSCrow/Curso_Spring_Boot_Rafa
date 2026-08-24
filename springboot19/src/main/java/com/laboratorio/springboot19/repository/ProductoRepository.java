@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,6 +29,31 @@ public interface ProductoRepository extends JpaRepository<Producto,Integer> {
             """)
     Optional<ProductoResponse> findProductoByNombre(@Param("nombre") String nombre);
 
+    @Query("""
+            SELECT new com.laboratorio.springboot19.dto.ProductoResponse
+                (p.id,p.categoriaId,p.nombre)
+                FROM Producto p
+                ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findAllOrderByNombreAsc();
 
+    @Query("""
+            SELECT new com.laboratorio.springboot19.dto.ProductoResponse
+                (p.id,p.categoriaId,p.nombre)
+                FROM Producto p
+                WHERE UPPER(p.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
+                ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+            @Param("infix") String infix);
 
+    @Query("""
+            SELECT new com.laboratorio.springboot19.dto.ProductoResponse
+                (p.id,p.categoriaId,p.nombre)
+                FROM Producto p
+                WHERE p.categoriaId= :categoriaId
+                ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findByCategoriaIdOrderByNombreAsc(
+            @Param("categoriaId") Integer categoriaId);
 }

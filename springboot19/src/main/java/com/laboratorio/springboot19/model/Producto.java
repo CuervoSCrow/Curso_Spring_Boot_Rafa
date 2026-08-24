@@ -16,6 +16,7 @@ import java.time.LocalDate;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "codigo")
     private Integer id;
 
     @Column(name="categoria_id",nullable = false)
