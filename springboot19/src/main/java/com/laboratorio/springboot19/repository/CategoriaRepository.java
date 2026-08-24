@@ -20,6 +20,7 @@ public interface CategoriaRepository extends JpaRepository<Categoria,Integer> {
             """)
     Optional<CategoriaResponse> findCategoriaResponseById(@Param("id") Integer id);
 
+
     @Query("""
             SELECT new com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
                 FROM Categoria c
@@ -28,14 +29,18 @@ public interface CategoriaRepository extends JpaRepository<Categoria,Integer> {
     Optional<CategoriaResponse> findCategoriaResponseOneByNombre(@Param("nombre") String nombre);
 
     @Query("""
-            SELECT new.com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
-            FROM Categorias c
+            SELECT new com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
+            FROM Categoria c
             ORDER BY c.nombre ASC
             """)
     List<CategoriaResponse> findAllOrderByNombreAsc();
 
-//    SELECT new.com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
-//    FROM Categoria c
-//    WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
-//    ORDER BY c.nombre ASC
+    @Query("""            
+        SELECT new com.laboratorio.springboot19.dto.CategoriaResponse(c.id, c.nombre)
+            FROM Categoria c
+            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
+            ORDER BY c.nombre ASC
+    """)
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc
+            (@Param("infix")String infix);
 }
