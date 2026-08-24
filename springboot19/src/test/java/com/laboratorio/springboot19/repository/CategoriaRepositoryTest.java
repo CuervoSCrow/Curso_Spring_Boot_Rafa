@@ -36,7 +36,16 @@ public class CategoriaRepositoryTest {
 
     @Test
     void findAllOrderByNombreAscTest(){
-        List<CategoriaResponse> categorias = this.categoriaRepository.findAllOrderByNombreAsc();
+        List<CategoriaResponse> categorias =
+                this.categoriaRepository.findAllOrderByNombreAsc();
         assertEquals(3,categorias.size());
+    }
+
+    @Test
+    void findByNombreContainingIgnoreCaseOrderByNombreAsc(){
+        String infix="TeGo";
+
+        List<CategoriaResponse> categorias =
+                this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
     }
 }
