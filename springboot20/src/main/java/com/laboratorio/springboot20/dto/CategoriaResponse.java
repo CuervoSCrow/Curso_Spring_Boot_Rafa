@@ -1,5 +1,6 @@
 package com.laboratorio.springboot20.dto;
 
+import com.laboratorio.springboot20.model.Categoria;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,4 +9,10 @@ import lombok.Setter;
 public class CategoriaResponse {
     private Integer id;
     private String nombre;
+
+    public CategoriaResponse(Categoria categoria) {
+        this.id = categoria.getId();
+        this.nombre = categoria.getNombre();
+    }
+
 }
