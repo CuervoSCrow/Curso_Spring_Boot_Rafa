@@ -48,4 +48,5 @@ public class CategoriaRepositoryTest {
         List<CategoriaResponse> categorias =
                 this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
     }
+//    Para poder guardar
 }
