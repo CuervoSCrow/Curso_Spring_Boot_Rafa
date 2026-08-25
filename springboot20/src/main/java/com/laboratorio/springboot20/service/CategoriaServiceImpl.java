@@ -8,6 +8,7 @@ import com.laboratorio.springboot20.model.Categoria;
 import com.laboratorio.springboot20.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,26 +20,31 @@ public class CategoriaServiceImpl implements CategoriaService{
     private final CategoriaRepository categoriaRepository;
 
     @Override
+    @Transactional
     public Optional<CategoriaResponse> findCategoriaResponseById(Integer id) {
         return this.categoriaRepository.findCategoriaResponseById(id);
     }
 
     @Override
+    @Transactional
     public Optional<CategoriaResponse> findCategoriaResponseByNombre(String nombre) {
         return this.categoriaRepository.findCategoriaResponseByNombre(nombre);
     }
 
     @Override
+    @Transactional
     public List<CategoriaResponse> findAllOrderByNombreAsc() {
         return this.categoriaRepository.findAllOrderByNombreAsc();
     }
 
     @Override
+    @Transactional
     public List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre) {
         return this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(nombre);
     }
 
     @Override
+    @Transactional
     public CategoriaResponse createCategoria(CategoriaRequest request) {
         Optional<CategoriaResponse> categoriaDB =
                 this.categoriaRepository.findCategoriaResponseByNombre(request.getNombre());
@@ -51,6 +57,7 @@ public class CategoriaServiceImpl implements CategoriaService{
     }
 
     @Override
+    @Transactional
     public CategoriaResponse updateCategoria(Integer id, CategoriaRequest request) {
         Optional<CategoriaResponse> categoriaDB =
                 this.categoriaRepository.findCategoriaResponseById(id);
@@ -71,7 +78,13 @@ public class CategoriaServiceImpl implements CategoriaService{
     }
 
     @Override
+    @Transactional
     public boolean deleteCategoria(Integer id) {
-        return false;
+        Optional<CategoriaResponse> categoriaDB = this.findCategoriaResponseById(id);
+        if(categoriaDB.isEmpty()){
+            return false;
+        }
+        this.categoriaRepository.deleteById(id);
+        return true;
     }
 }
