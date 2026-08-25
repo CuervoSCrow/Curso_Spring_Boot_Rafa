@@ -1,5 +1,6 @@
 package com.laboratorio.springboot20.service;
 
+import com.laboratorio.springboot20.dto.ProductoRequest;
 import com.laboratorio.springboot20.dto.ProductoResponse;
 import com.laboratorio.springboot20.model.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ public interface ProductoService {
     List<ProductoResponse> findAllOrderByNombreAsc();
     List<ProductoResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
             String nombre);
+    List<ProductoResponse> findByCategoriaIdOrderByNombreAsc(Integer categoriaId);
     ProductoResponse createProducto(ProductoRequest request);
     ProductoResponse updateProducto(Integer id,ProductoRequest request);
     boolean deleteProducto(Integer id);

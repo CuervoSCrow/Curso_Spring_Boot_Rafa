@@ -2,8 +2,9 @@ package com.laboratorio.springboot20.service;
 
 import com.laboratorio.springboot20.dto.CategoriaRequest;
 import com.laboratorio.springboot20.dto.CategoriaResponse;
+import com.laboratorio.springboot20.dto.ProductoResponse;
 import com.laboratorio.springboot20.exception.InvalidOperationException;
-import com.laboratorio.springboot20.exception.ResourceNotFound;
+import com.laboratorio.springboot20.exception.ResourceNotFoundException;
 import com.laboratorio.springboot20.model.Categoria;
 import com.laboratorio.springboot20.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class CategoriaServiceImpl implements CategoriaService{
 
     private final CategoriaRepository categoriaRepository;
+    private final ProductoService productoService;
 
     @Override
     @Transactional
@@ -62,7 +64,7 @@ public class CategoriaServiceImpl implements CategoriaService{
         Optional<CategoriaResponse> categoriaDB =
                 this.categoriaRepository.findCategoriaResponseById(id);
         if(categoriaDB.isEmpty()){
-            throw new ResourceNotFound("No se puede efectuar la modificación, " +
+            throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
                     "la categoria no existe");
         }
         Optional<CategoriaResponse> otraCategoria =
@@ -83,6 +85,11 @@ public class CategoriaServiceImpl implements CategoriaService{
         Optional<CategoriaResponse> categoriaDB = this.findCategoriaResponseById(id);
         if(categoriaDB.isEmpty()){
             return false;
+        }
+        List<ProductoResponse> productos = this.productoService.findByCategoriaIdOrderByNombreAsc(id);
+        if(!productos.isEmpty()){
+            throw new InvalidOperationException("No se puede eliminar una categoria, " +
+                    "con productos asociados");
         }
         this.categoriaRepository.deleteById(id);
         return true;

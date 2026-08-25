@@ -1,6 +1,8 @@
 package com.laboratorio.springboot20.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.laboratorio.springboot20.dto.ProductoRequest;
+import com.laboratorio.springboot20.dto.ProductoResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,21 @@ public class Producto {
     @JoinColumn(name = "categoria_id",nullable = false,
                 insertable = false,updatable = false)
     private Categoria categoria;
+
+    public Producto(ProductoRequest request){
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = LocalDate.now();
+    }
+
+    public Producto(ProductoResponse response, ProductoRequest request){
+        this.id = response.getCodigo();
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = response.getFechaIngreso();
+    }
 
     @Override
     public String toString() {
