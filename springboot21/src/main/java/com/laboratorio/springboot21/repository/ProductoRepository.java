@@ -20,7 +20,7 @@ public interface ProductoRepository extends
                 FROM Producto p
                 WHERE p.id = :id
             """)
-    Optional<ProductoResponse> findByProductoById(Integer id);
+    Optional<ProductoResponse> findProductoById(Integer id);
 
     @Query("""
             SELECT new com.laboratorio.springboot21.dto.ProductoResponse
@@ -28,7 +28,7 @@ public interface ProductoRepository extends
                 FROM Producto p
                 WHERE p.nombre = :nombre
             """)
-    Optional<ProductoResponse> findByNombre(String nombre);
+    Optional<ProductoResponse> findProductoByNombre(String nombre);
 
     @Query("""
             SELECT new com.laboratorio.springboot21.dto.ProductoResponse
