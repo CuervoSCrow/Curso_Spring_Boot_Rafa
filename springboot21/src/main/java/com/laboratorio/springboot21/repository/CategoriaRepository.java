@@ -22,29 +22,29 @@ public interface CategoriaRepository extends
             """)
     Optional<CategoriaResponse> findCategoriaById(Integer id);
 
-//    @Query("""
-//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-//            (c.id, c.nombre)
-//            FROM Categoria c
-//            WHERE c.nombre = :nombre
-//            """)
-//    Optional<Categoria> findCategoriaByNombre(String nombre);
-//
-////    @Query("""
-////            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-//            (c.id, c.nombre)
-//            FROM Categoria c
-//            ORDER BY c.nombre ASC
-//            """)
-//    List<CategoriaResponse> findAllOrderByNombreAsc();
-//
-//    @Query("""
-//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-//            (c.id, c.nombre)
-//            FROM Categoria c
-//            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
-//            ORDER BY c.nombre ASC
-//            """)
-//    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
-//            @Param("nombre") String nombre);
+    @Query("""
+            SELECT new com.laboratorio.springboot21.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE c.nombre = :nombre
+            """)
+    Optional<CategoriaResponse> findCategoriaByNombre(String nombre);
+
+    @Query("""
+            SELECT new com.laboratorio.springboot21.dto.CategoriaResponse
+                (c.id, c.nombre)
+                FROM Categoria c
+                ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findAllOrderByNombreAsc();
+
+    @Query("""
+            SELECT new com.laboratorio.springboot21.dto.CategoriaResponse
+                (c.id, c.nombre)
+                FROM Categoria c
+                WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+                ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+            @Param("nombre") String nombre);
 }
