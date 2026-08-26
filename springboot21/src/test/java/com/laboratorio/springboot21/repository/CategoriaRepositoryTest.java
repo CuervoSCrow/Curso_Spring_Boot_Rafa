@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -27,6 +28,33 @@ public class CategoriaRepositoryTest {
         Assertions.assertEquals(id,response.getId());
         Assertions.assertEquals("Categoria 2",response.getNombre());
 
+    }
+
+    @Test
+    void findCategoriaByNombreTest(){
+        String nombre = "Categoria 3";
+        CategoriaResponse response =
+                categoriaRepository.findCategoriaByNombre(nombre).get();
+
+        Assertions.assertEquals(nombre,response.getNombre());
+        Assertions.assertEquals(3,response.getId());
+    }
+
+    @Test
+    void findAllOrderByNombreAscTest(){
+        List<CategoriaResponse> response =
+                categoriaRepository.findAllOrderByNombreAsc();
+
+        Assertions.assertEquals(3,response.size());
+    }
+
+    @Test
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
+        String infix= "TegO";
+        List<CategoriaResponse> response =
+                categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
+
+        Assertions.assertEquals(3,response.size());
     }
 
 }
