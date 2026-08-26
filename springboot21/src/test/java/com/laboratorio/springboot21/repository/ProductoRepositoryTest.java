@@ -38,6 +38,13 @@ public class ProductoRepositoryTest {
    }
 
    @Test
+   void findAllOrderByNombreAscTest(){
+        List<ProductoResponse> productos =
+                productoRepository.findAllOrderByNombreAsc();
+        Assertions.assertEquals(9,productos.size());
+   }
+
+   @Test
    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
         String infix="oDUc";
         List<ProductoResponse> productos=
@@ -50,7 +57,7 @@ public class ProductoRepositoryTest {
         Integer categoriaId = 3;
         List<ProductoResponse> productos =
                 productoRepository.findByCategoriaIdOrderByNombreAsc(categoriaId);
-        
+
         Assertions.assertEquals(3,productos.size());
    }
 }
