@@ -14,13 +14,13 @@ import java.util.Optional;
 public interface CategoriaRepository extends
         JpaRepository<Categoria, Integer> {
 
-//    @Query("""
-//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-//            (c.id, c.nombre)
-//            FROM Categoria c
-//            WHERE c.id = :id
-//            """)
-//    Optional<Categoria> findCategoriaById(Integer id);
+    @Query("""
+            SELECT new com.laboratorio.springboot21.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE c.id = :id
+            """)
+    Optional<CategoriaResponse> findCategoriaById(Integer id);
 
 //    @Query("""
 //            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
