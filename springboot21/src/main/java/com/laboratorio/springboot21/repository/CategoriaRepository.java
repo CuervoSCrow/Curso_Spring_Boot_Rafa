@@ -14,37 +14,37 @@ import java.util.Optional;
 public interface CategoriaRepository extends
         JpaRepository<Categoria, Integer> {
 
-    @Query("""
-            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-            (c.id, c.nombre)
-            FROM Categoria c
-            WHERE c.id = :id
-            """)
-    Optional<Categoria> findCategoriaById(Integer id);
+//    @Query("""
+//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
+//            (c.id, c.nombre)
+//            FROM Categoria c
+//            WHERE c.id = :id
+//            """)
+//    Optional<Categoria> findCategoriaById(Integer id);
 
-    @Query("""
-            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-            (c.id, c.nombre)
-            FROM Categoria c
-            WHERE c.nombre = :nombre
-            """)
-    Optional<Categoria> findCategoriaByNombre(String nombre);
-
-    @Query("""
-            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-            (c.id, c.nombre)
-            FROM Categoria c
-            ORDER BY c.nombre ASC
-            """)
-    List<CategoriaResponse> findAllOrderByNombreAsc();
-
-    @Query("""
-            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
-            (c.id, c.nombre)
-            FROM Categoria c
-            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
-            ORDER BY c.nombre ASC
-            """)
-    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
-            @Param("nombre") String nombre);
+//    @Query("""
+//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
+//            (c.id, c.nombre)
+//            FROM Categoria c
+//            WHERE c.nombre = :nombre
+//            """)
+//    Optional<Categoria> findCategoriaByNombre(String nombre);
+//
+////    @Query("""
+////            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
+//            (c.id, c.nombre)
+//            FROM Categoria c
+//            ORDER BY c.nombre ASC
+//            """)
+//    List<CategoriaResponse> findAllOrderByNombreAsc();
+//
+//    @Query("""
+//            SELECT new com.laboratorio.springboot21.model.CategoriaResponse
+//            (c.id, c.nombre)
+//            FROM Categoria c
+//            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+//            ORDER BY c.nombre ASC
+//            """)
+//    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+//            @Param("nombre") String nombre);
 }
