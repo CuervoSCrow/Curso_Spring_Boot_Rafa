@@ -45,7 +45,7 @@ public interface CategoriaRepository extends
             SELECT new com.laboratorio.springboot20.dto.CategoriaResponse
                 (c.id, c.nombre)
                 FROM Categoria c
-                WHERE UPPER(c.nombre) LIKE  UPPER(CONCAT('%',:nombre,'%')
+                WHERE UPPER(c.nombre) LIKE  UPPER(CONCAT('%',:nombre,'%'))
                 ORDER BY c.nombre ASC
             """)
     List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
