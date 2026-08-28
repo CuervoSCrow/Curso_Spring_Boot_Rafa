@@ -25,7 +25,7 @@ class CategoriaServiceTest {
     private CategoriaServiceImpl categoriaService;
 
     @Test
-    void findCategoriaByIdTest_CategoriaExista() {
+    void testfindCategoriaById_CategoriaExist() {
         CategoriaResponse categoriaDB =
                 new CategoriaResponse(
                         1,
@@ -51,5 +51,31 @@ class CategoriaServiceTest {
 
         assertTrue(categoria.isEmpty());
         verify(this.categoriaRepository).findCategoriaById(1);
+    }
+
+    @Test
+    void testFindCategoriaByNombre_CategoriaExist(){
+        CategoriaResponse categoriaDB =
+                new CategoriaResponse(1, "perifericos");
+
+        when(categoriaRepository
+                .findCategoriaByNombre("perifericos"))
+                        .thenReturn(Optional.of(categoriaDB));
+        Optional<CategoriaResponse>categoria=
+                this.categoriaService.findCategoriaByNombre("perifericos");
+        assertTrue(categoria.isPresent());
+        assertEquals(1,categoria.get().getId());
+        verify(this.categoriaRepository).findCategoriaByNombre("perifericos");
+    }
+
+    @Test
+    void testFindCategoriaByNombre_CategoriaNotFound(){
+        when(this.categoriaRepository
+                .findCategoriaByNombre("perifericos"))
+                    .thenReturn(Optional.empty());
+        Optional<CategoriaResponse> categoria =
+                this.categoriaService.findCategoriaByNombre("perifericos");
+        assertTrue(categoria.isEmpty());
+        verify(this.categoriaRepository).findCategoriaByNombre("perifericos");
     }
 }
