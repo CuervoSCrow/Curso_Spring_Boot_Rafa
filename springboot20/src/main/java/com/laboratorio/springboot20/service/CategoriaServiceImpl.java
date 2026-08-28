@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CategoriaServiceImpl implements CategoriaService{
-//comentario vacio
+//comentario vacio por que no se que hacer con el commit
     private final CategoriaRepository categoriaRepository;
     private final ProductoService productoService;
 
