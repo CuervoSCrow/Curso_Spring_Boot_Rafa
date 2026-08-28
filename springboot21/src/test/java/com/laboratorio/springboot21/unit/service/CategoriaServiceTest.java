@@ -10,6 +10,7 @@ import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -77,5 +78,24 @@ class CategoriaServiceTest {
                 this.categoriaService.findCategoriaByNombre("perifericos");
         assertTrue(categoria.isEmpty());
         verify(this.categoriaRepository).findCategoriaByNombre("perifericos");
+    }
+
+    @Test
+    void testFindAllOrderByNombreAsc(){
+        List<CategoriaResponse> categoriasDB =
+                List.of(
+                        new CategoriaResponse(1, "Impresoras"),
+                        new CategoriaResponse(2, "Monitores"),
+                        new CategoriaResponse(3, "Perifericos")
+                );
+
+        when(this.categoriaRepository
+                .findAllOrderByNombreAsc())
+                    .thenReturn(categoriasDB);
+        List<CategoriaResponse> categorias = this.categoriaService.findAllOrderByNombreAsc();
+
+        assertFalse(categorias.isEmpty());
+        assertEquals(3, categorias.size());
+        verify(this.categoriaRepository).findAllOrderByNombreAsc();
     }
 }
