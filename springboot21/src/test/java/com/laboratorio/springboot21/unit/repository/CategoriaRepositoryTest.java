@@ -1,7 +1,8 @@
-package com.laboratorio.springboot21.repository;
+package com.laboratorio.springboot21.unit.repository;
 
 import com.laboratorio.springboot21.dto.CategoriaResponse;
 import com.laboratorio.springboot21.model.Categoria;
+import com.laboratorio.springboot21.repository.CategoriaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
