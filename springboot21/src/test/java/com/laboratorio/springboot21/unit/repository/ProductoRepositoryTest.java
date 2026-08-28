@@ -1,6 +1,7 @@
-package com.laboratorio.springboot21.repository;
+package com.laboratorio.springboot21.unit.repository;
 
 import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.repository.ProductoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
