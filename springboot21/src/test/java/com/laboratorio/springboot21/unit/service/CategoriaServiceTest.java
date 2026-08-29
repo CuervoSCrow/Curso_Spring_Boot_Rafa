@@ -98,4 +98,19 @@ class CategoriaServiceTest {
         assertEquals(3, categorias.size());
         verify(this.categoriaRepository).findAllOrderByNombreAsc();
     }
+
+    @Test
+    void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
+        List<CategoriaResponse> categoriasDB = List.of(
+                new CategoriaResponse(2, "Monitores")
+        );
+        when(this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc("Nito"))
+                                     .thenReturn(categoriasDB);
+        List<CategoriaResponse> categorias =
+                this.categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc("Nito");
+
+        assertFalse(categorias.isEmpty());
+        assertEquals(1, categorias.size());
+        verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("Nito");
+    }
 }
