@@ -1,6 +1,9 @@
 package com.laboratorio.springboot21.unit.service;
 
+import com.laboratorio.springboot21.dto.CategoriaRequest;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
+import com.laboratorio.springboot21.model.Categoria;
+import com.laboratorio.springboot21.model.Producto;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
 import com.laboratorio.springboot21.service.CategoriaServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -112,5 +115,64 @@ class CategoriaServiceTest {
         assertFalse(categorias.isEmpty());
         assertEquals(1, categorias.size());
         verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("Nito");
+    }
+
+    @Test
+    void testCreateCategoria_CategoriaCreated(){
+        CategoriaRequest request = new CategoriaRequest("Perifericos");
+        Categoria categoriaNueva = new Categoria(1,"Perifericos");
+        when(this.categoriaRepository.findCategoriaByNombre("Perifericos"))
+                .thenReturn(Optional.empty());
+        when(this.categoriaRepository
+                .save(any(Categoria.class)))
+                        .thenReturn(categoriaNueva);
+        CategoriaResponse categoria = this.categoriaService.createCategoria(request);
+
+        assertNotNull(categoria);
+        assertEquals(1, categoria.getId());
+        assertEquals("Perifericos", categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaByNombre("Perifericos");
+        verify(this.categoriaRepository).save(any(Categoria.class));
+    }
+
+    @Test
+    void testCreateCategoria_ReturnExisting(){
+        CategoriaRequest request  = new CategoriaRequest("Perifericos");
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Perifericos");
+
+        when(this.categoriaRepository
+                 .findCategoriaByNombre("Perifericos"))
+                 .thenReturn(Optional.of(categoriaDB));
+
+        CategoriaResponse categoria = this.categoriaService.createCategoria(request);
+
+        assertNotNull(categoria);
+        assertEquals(1, categoria.getId());
+        assertEquals("Perifericos", categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaByNombre("Perifericos");
+        verify(this.categoriaRepository,never()).save(any(Categoria.class));
+    }
+
+    @Test
+    void testUpdateCategoria_CategoriaUpdated(){
+        CategoriaRequest request = new CategoriaRequest("Perifericos");
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Perifericos");
+        Categoria categoriaModificada = new Categoria(1,"Perifericos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.categoriaRepository.findCategoriaByNombre("Perifericos"))
+                .thenReturn(Optional.empty());
+        when(this.categoriaRepository.save(any(Categoria.class)))
+                .thenReturn(categoriaModificada);
+
+        CategoriaResponse categoria = this.categoriaService.updateCategoria(1, request);
+
+        assertNotNull(categoria);
+        assertEquals("Perifericos",categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository).findCategoriaByNombre("Perifericos");
+        verify(this.categoriaRepository).save(any(Categoria.class));
+
     }
 }
