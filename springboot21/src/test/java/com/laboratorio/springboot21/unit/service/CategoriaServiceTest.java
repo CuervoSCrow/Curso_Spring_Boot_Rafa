@@ -2,10 +2,13 @@ package com.laboratorio.springboot21.unit.service;
 
 import com.laboratorio.springboot21.dto.CategoriaRequest;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
+import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.exception.InvalidOperationException;
+import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
-import com.laboratorio.springboot21.model.Producto;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
 import com.laboratorio.springboot21.service.CategoriaServiceImpl;
+import com.laboratorio.springboot21.service.ProductoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +16,8 @@ import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoriaServiceTest {
     @Mock
     private CategoriaRepository categoriaRepository;
+
+    @Mock
+    private ProductoService productoService;
 
     @InjectMocks
     private CategoriaServiceImpl categoriaService;
@@ -173,6 +181,109 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaById(1);
         verify(this.categoriaRepository).findCategoriaByNombre("Perifericos");
         verify(this.categoriaRepository).save(any(Categoria.class));
+
+    }
+
+    @Test
+    void testUpdateCategoria_CategoryNotFound(){
+        CategoriaRequest request = new CategoriaRequest("Perifericos");
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.empty());
+        ResourceNotFoundException exception =
+                assertThrows(ResourceNotFoundException.class, () -> {
+            this.categoriaService.updateCategoria(
+                    1,
+                    request
+            );
+        });
+        assertEquals("No se puede efectuarla modificacion, " +
+                "la Categoria no existe", exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository, never()).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository, never()).save(any(Categoria.class));
+    }
+
+    @Test
+    void testUpdateCategoria_CategoryAlreadyExists(){
+        CategoriaRequest request = new CategoriaRequest("Periféricos");
+
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Perifericos");
+        CategoriaResponse otraCategoria = new CategoriaResponse(2,"Periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.categoriaRepository.findCategoriaByNombre(request.getNombre()))
+                .thenReturn(Optional.of(otraCategoria));
+
+        InvalidOperationException exception =
+                assertThrows(InvalidOperationException.class,
+                        ()->{
+                            this.categoriaService.updateCategoria(1,request);
+                        });
+
+        assertEquals("No se puede efectuar la modificación, " +
+                "el nombre de la categoria ya existe", exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository).findCategoriaByNombre(request.getNombre());
+        verify(this.categoriaRepository).findCategoriaByNombre("Periféricos");
+        verify(this.categoriaRepository, never()).save(any(Categoria.class));
+
+    }
+
+    @Test
+    void testDeleteCategoria_CategoriaDeleted(){
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Periféricos");
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoService.findByCategoriaIdOrderByNombreAsc(1))
+                .thenReturn(Collections.emptyList());
+
+        boolean result = this.categoriaService.deleteCategoria(1);
+        assertTrue(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoService).findByCategoriaIdOrderByNombreAsc(1);
+        verify(this.categoriaRepository).deleteById(1);
+    }
+
+    @Test
+    void testDeleteCategoria_CategoriaNotFound(){
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.empty());
+        boolean result =this.categoriaService.deleteCategoria(1);
+
+        assertFalse(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoService,never()).findByCategoriaIdOrderByNombreAsc(anyInt());
+        verify(this.categoriaRepository,never()).deleteById(anyInt());
+    }
+
+    @Test
+    void testDeleteCategoria_HasProductos(){
+        CategoriaResponse  categoriaDB = new CategoriaResponse(1,"Periféricos");
+        List<ProductoResponse> productosDB = List.of(
+                new ProductoResponse(
+                        1,
+                        1,
+                        "Mouse",
+                        10.00,
+                        LocalDate.now())
+        );
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoService.findByCategoriaIdOrderByNombreAsc(1))
+                .thenReturn(productosDB);
+
+        InvalidOperationException exception =
+                assertThrows(InvalidOperationException.class,()->{
+                    this.categoriaService.deleteCategoria(1);
+                });
+
+        assertEquals("No se puede eliminar una categoria con productos asociados",
+                exception.getMessage());
+
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoService).findByCategoriaIdOrderByNombreAsc(1);
+        verify(this.categoriaRepository,never()).deleteById(anyInt());
 
     }
 }
