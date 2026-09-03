@@ -5,7 +5,9 @@ import org.mock.MockTestingProject01.persistence.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerRepository implements IPlayerRepository{
+import static java.util.Locale.filter;
+
+public class PlayerRepositoryImpl implements IPlayerRepository{
     private List<Player> playerDB = new ArrayList<>(
             List.of(
                     new Player(1L,"Lionel Messi", "Inter Miami", "Delantero"),
@@ -19,21 +21,30 @@ public class PlayerRepository implements IPlayerRepository{
 
     @Override
     public List<Player> findAll() {
-        return List.of();
+        System.out.println("--> Metodo findAll() real!!");
+        return this.findAll();
     }
 
     @Override
     public Player findById(Long id) {
-        return null;
+        System.out.println("--> Metodo findById() real!!");
+        return this.playerDB.stream()
+                .filter(player -> player.getId() == id)
+                .findFirst()
+                .orElseThrow();
     }
 
     @Override
     public void save(Player player) {
-
+        System.out.println("--> Metodo save() real!!");
+        this.playerDB.add(player);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        System.out.println("--> Metodo deleteById() real!!");
+        this.playerDB =this.playerDB.stream()
+        .filter(player -> player.getId()!=id)
+        .toList();
     }
 }
