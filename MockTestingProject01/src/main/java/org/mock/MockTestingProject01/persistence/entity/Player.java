@@ -17,9 +17,9 @@ public class Player {
     public String toString() {
         return "Player{" +
                 "id=" + id +
-                "name='" + name + '\'' +
-                "team='" + team + '\'' +
-                "position='" + position + '\'' +
+                ", name='" + name + '\'' +
+                ", team='" + team + '\'' +
+                ", position='" + position + '\'' +
                 '}';
     }
 }
