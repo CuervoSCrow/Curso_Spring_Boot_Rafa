@@ -58,8 +58,8 @@ public class CategoriaServiceImpl implements CategoriaService {
         Optional<CategoriaResponse> categoriaDB =
                 this.categoriaRepository.findCategoriaById(id);
         if(categoriaDB.isEmpty()){
-            throw new ResourceNotFoundException("No se puede efectuar la modificacion, " +
-                    "la Categoria no existe");
+            throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
+                    "la categoria no existe");
         }
         Optional<CategoriaResponse> otraCategoria =
                 this.categoriaRepository.findCategoriaByNombre(request.getNombre());

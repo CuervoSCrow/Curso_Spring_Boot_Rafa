@@ -2,6 +2,7 @@ package com.laboratorio.springboot21.unit.service;
 
 import com.laboratorio.springboot21.dto.CategoriaRequest;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
+import com.laboratorio.springboot21.exception.InvalidOperationException;
 import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
@@ -204,6 +205,35 @@ class CategoriaServiceTest2 {
         verify(this.categoriaRepository).findCategoriaById(1);
         verify(this.categoriaRepository,never()).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository,never()).save(any(Categoria.class));
+    }
+
+    @Test
+    void testUpdateCategoria_DuplicateName(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+        CategoriaResponse categoriaDB1 = new CategoriaResponse(1,"perifericos");
+        CategoriaResponse categoriaDB2 = new CategoriaResponse(2,"periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB1));
+        when(this.categoriaRepository.findCategoriaByNombre(request.getNombre()))
+                .thenReturn(Optional.of(categoriaDB2));
+
+//        InvalidOperationException exception =
+//                assertThrows(InvalidOperationException.class,() ->{
+//                    this.categoriaService.updateCategoria(1,request);
+//                        });
+        InvalidOperationException exception = assertThrows(InvalidOperationException.class, () -> {
+            this.categoriaService.updateCategoria(1, request);
+        });
+    
+
+//        assertEquals("No se puede efectuar la modificación, "+
+//                "el nombre de la categoria ya existe", exception.getMessage());
+
+    }
+    @Test
+    void deleteCategoria_CategoriaDeleted(){
+
     }
 
 
