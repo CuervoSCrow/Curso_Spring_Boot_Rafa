@@ -57,4 +57,6 @@ public interface ProductoRepository extends
             """)
     List<ProductoResponse> findByCategoriaIdOrderByNombreAsc(
             @Param("categoriaId") Integer categoriaId);
+
+    long countByCategoriaId(Integer categoriaId);
 }

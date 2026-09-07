@@ -7,6 +7,7 @@ import com.laboratorio.springboot21.exception.InvalidOperationException;
 import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
+import com.laboratorio.springboot21.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class CategoriaServiceImpl implements CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
-    private final ProductoService productoService;
+    private final ProductoRepository productoRepository;
 
 
     @Override
@@ -54,20 +55,20 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public CategoriaResponse updateCategoria(Integer id, CategoriaRequest request) {
-        Optional<CategoriaResponse> categoriaDB =
-                this.categoriaRepository.findCategoriaById(id);
-        if(categoriaDB.isEmpty()){
-            throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
-                    "la categoria no existe");
-        }
-        Optional<CategoriaResponse> otraCategoria =
-                this.categoriaRepository.findCategoriaByNombre(request.getNombre());
-        if(otraCategoria.isPresent() &&
-                !otraCategoria.get().getId().equals(otraCategoria.get().getId())){
-            throw new InvalidOperationException("No se puede efectuar la modificación, "+
-                    "el nombre de la categoria ya existe");
-        }
+        public CategoriaResponse updateCategoria(Integer id, CategoriaRequest request) {
+            Optional<CategoriaResponse> categoriaDB =
+                    this.categoriaRepository.findCategoriaById(id);
+            if(categoriaDB.isEmpty()){
+                throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
+                        "la categoria no existe");
+            }
+            Optional<CategoriaResponse> otraCategoria =
+                    this.categoriaRepository.findCategoriaByNombre(request.getNombre());
+            if(otraCategoria.isPresent() &&
+                    !categoriaDB.get().getId().equals(otraCategoria.get().getId())){
+                throw new InvalidOperationException("No se puede efectuar la modificación, "+
+                        "el nombre de la categoria ya existe");
+            }
         Categoria categoria = new Categoria(id, request.getNombre());
         Categoria categoriaModificada = this.categoriaRepository.save(categoria);
         return new CategoriaResponse(categoriaModificada);
@@ -80,9 +81,8 @@ public class CategoriaServiceImpl implements CategoriaService {
         if(categoriaDB.isEmpty()){
             return false;
         }
-        List<ProductoResponse> productos =
-                this.productoService.findByCategoriaIdOrderByNombreAsc(id);
-        if(productos.isEmpty()){
+        long nProductos = productoRepository.countByCategoriaId(id);
+        if(nProductos>0){
             throw new InvalidOperationException("No se puede eliminar la categoria, " +
                     "la categoria tiene productos asociados");
         }

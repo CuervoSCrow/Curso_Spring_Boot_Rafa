@@ -6,6 +6,7 @@ import com.laboratorio.springboot21.exception.InvalidOperationException;
 import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
+import com.laboratorio.springboot21.repository.ProductoRepository;
 import com.laboratorio.springboot21.service.CategoriaServiceImpl;
 import com.laboratorio.springboot21.service.ProductoService;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class CategoriaServiceTest2 {
     private CategoriaRepository categoriaRepository;
 
     @Mock
-    private ProductoService productoService;
+    private ProductoRepository productoRepository;
 
     @InjectMocks
     private CategoriaServiceImpl categoriaService;
@@ -200,7 +201,7 @@ class CategoriaServiceTest2 {
                 {
                     this.categoriaService.updateCategoria(1,request);
                 });
-        assertEquals("No se puede efectuar la modificacion, la Categoria no existe",
+        assertEquals("No se puede efectuar la modificación, la categoria no existe",
                 exception.getMessage());
         verify(this.categoriaRepository).findCategoriaById(1);
         verify(this.categoriaRepository,never()).findCategoriaByNombre(anyString());
@@ -218,23 +219,34 @@ class CategoriaServiceTest2 {
         when(this.categoriaRepository.findCategoriaByNombre(request.getNombre()))
                 .thenReturn(Optional.of(categoriaDB2));
 
-//        InvalidOperationException exception =
-//                assertThrows(InvalidOperationException.class,() ->{
-//                    this.categoriaService.updateCategoria(1,request);
-//                        });
-        InvalidOperationException exception = assertThrows(InvalidOperationException.class, () -> {
-            this.categoriaService.updateCategoria(1, request);
-        });
-    
+        InvalidOperationException exception =
+                assertThrows(InvalidOperationException.class,() ->{
+                    this.categoriaService.updateCategoria(1,request);
+                        });
 
-//        assertEquals("No se puede efectuar la modificación, "+
-//                "el nombre de la categoria ya existe", exception.getMessage());
-
+        assertEquals("No se puede efectuar la modificación, "+
+                "el nombre de la categoria ya existe", exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
+        verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
     @Test
-    void deleteCategoria_CategoriaDeleted(){
+    void testDeleteCategoria_CategoriaDeleted(){
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"perifericos");
 
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.countByCategoriaId(1))
+                .thenReturn(0L);
+
+        boolean result = this.categoriaService.deleteCategoria(1);
+
+        assertTrue(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository).countByCategoriaId(1);
+        verify(this.categoriaRepository).deleteById(1);
     }
+
 
 
 }
