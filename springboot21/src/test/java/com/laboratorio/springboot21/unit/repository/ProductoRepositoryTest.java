@@ -61,4 +61,11 @@ public class ProductoRepositoryTest {
 
         Assertions.assertEquals(3,productos.size());
    }
+
+   @Test
+    void countByCategoriaIdTest(){
+        Integer categoriaId = 3;
+        long count = productoRepository.countByCategoriaId(categoriaId);
+        Assertions.assertEquals(3L,count);
+    }
 }

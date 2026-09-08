@@ -59,4 +59,6 @@ public interface ProductoRepository extends
             @Param("categoriaId") Integer categoriaId);
 
     long countByCategoriaId(Integer categoriaId);
+
+
 }
