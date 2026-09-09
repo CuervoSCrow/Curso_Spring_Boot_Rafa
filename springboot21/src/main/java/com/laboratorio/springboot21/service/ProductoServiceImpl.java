@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ProductoServiceImpl implements ProductoService {
 
     private final ProductoRepository productoRepository;
-    private final CategoriaServiceImpl categoriaService;
+    private final CategoriaService categoriaService;
 
     @Override
     public Optional<ProductoResponse> findProductoById(Integer id) {

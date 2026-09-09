@@ -1,6 +1,10 @@
 package com.laboratorio.springboot21.unit.service;
 
+import com.laboratorio.springboot21.dto.CategoriaResponse;
+import com.laboratorio.springboot21.dto.ProductoRequest;
 import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.model.Categoria;
+import com.laboratorio.springboot21.model.Producto;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
 import com.laboratorio.springboot21.repository.ProductoRepository;
 import com.laboratorio.springboot21.service.CategoriaService;
@@ -120,7 +124,7 @@ public class ProductoServiceTest {
     }
 
     @Test
-    void findByNombreContainingIgnoreCaseOrderByNombreAsc(){
+    void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
         List<ProductoResponse> productosDB = List.of(
                 new ProductoResponse(2,1,
                         "Teclado",15.00,LocalDate.now())
@@ -133,6 +137,47 @@ public class ProductoServiceTest {
         assertFalse(productos.isEmpty());
         assertEquals(1, productos.size());
         verify(this.productoRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("Cla");
+    }
+
+    @Test
+    void testFindByCategoriaIdOrderByNombreAsc(){
+        List<ProductoResponse> productosDB = List.of(
+            new ProductoResponse(
+                1,1,"Mouse",10.0, LocalDate.now()),
+            new ProductoResponse(
+                2,1,"Teclado",15.0, LocalDate.now()),
+            new ProductoResponse(
+                    3,1,"Disco Externo",80.0, LocalDate.now())
+        );
+
+        when(productoRepository.findByCategoriaIdOrderByNombreAsc(anyInt()))
+                .thenReturn(productosDB);
+
+        List<ProductoResponse> productos =
+                this.productoService.findByCategoriaIdOrderByNombreAsc(1);
+
+        assertFalse(productos.isEmpty());
+        assertEquals(3,productos.size());
+        verify(this.productoRepository).findByCategoriaIdOrderByNombreAsc(1);
+    }
+
+    @Test
+    void testCreateProduct(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Periferico");
+        Producto productoDB = new Producto(1,1,"Mouse",10.0,LocalDate.now(),
+                new Categoria(1,"Periferico"));
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.save(any(Producto.class)))
+                .thenReturn(productoDB);
+
+        ProductoResponse producto = this.productoService.createProducto(request);
+
+        assertNotNull(producto);
+
     }
 
 

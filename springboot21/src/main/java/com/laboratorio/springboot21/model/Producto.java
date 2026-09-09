@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.laboratorio.springboot21.dto.ProductoRequest;
 import com.laboratorio.springboot21.dto.ProductoResponse;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "productos")
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +51,7 @@ public class Producto {
         this.precio = request.getPrecio();
         this.fechaIngreso = response.getFechaIngreso();
     }
+
 
     @Override
     public String toString() {
