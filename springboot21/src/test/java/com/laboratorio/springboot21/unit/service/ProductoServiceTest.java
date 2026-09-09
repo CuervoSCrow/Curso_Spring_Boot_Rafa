@@ -226,5 +226,39 @@ public class ProductoServiceTest {
         verify(this.productoRepository, never()).save(any(Producto.class));
     }
 
+    @Test
+    void testUpdateProducto_ProductUpdate(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ProductoResponse productoDB = new ProductoResponse(
+                1,
+                1,
+                "Mouse",
+                10.0,
+                LocalDate.now());
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Perifericos");
+        Producto productoModificado = new Producto(1,1,"Mouse",10.0,LocalDate.now(),
+                new Categoria(1,"Perifericos"));
+
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.of(productoDB));
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.save(any(Producto.class)))
+                .thenReturn(productoModificado);
+
+        ProductoResponse producto = this.productoService.updateProducto(1,request);
+
+        assertNotNull(producto);
+        assertEquals(1,producto.getCodigo());
+        assertEquals(10,producto.getPrecio());
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository).findProductoByNombre("Mouse");
+        verify(this.categoriaService).findCategoriaById(1);
+        verify(this.productoRepository).save(any(Producto.class));
+
+    }
+
 
 }

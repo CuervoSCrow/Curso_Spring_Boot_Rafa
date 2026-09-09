@@ -3,6 +3,7 @@ package com.laboratorio.springboot21.service;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
 import com.laboratorio.springboot21.dto.ProductoRequest;
 import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.exception.InvalidOperationException;
 import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Producto;
 import com.laboratorio.springboot21.repository.ProductoRepository;
@@ -71,6 +72,14 @@ public class ProductoServiceImpl implements ProductoService {
                     "El producto no existe.");
         }
 
+        Optional<ProductoResponse> otroProducto =
+                this.productoRepository.findProductoByNombre(request.getNombre());
+        if(otroProducto.isPresent() &&
+                ! productoDB.get().getCodigo().equals(otroProducto.get().getCodigo())){
+            throw new InvalidOperationException("No se puede modificar el producto porque " +
+                    "existe otro con el mismo nombre.");
+        }
+        
         Optional<CategoriaResponse> categoriaDB =
                 this.categoriaService.findCategoriaById(request.getCategoriaId());
         if (categoriaDB.isEmpty()) {
