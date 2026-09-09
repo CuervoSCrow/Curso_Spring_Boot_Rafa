@@ -3,10 +3,10 @@ package com.laboratorio.springboot21.unit.service;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
 import com.laboratorio.springboot21.dto.ProductoRequest;
 import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.exception.InvalidOperationException;
 import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
 import com.laboratorio.springboot21.model.Producto;
-import com.laboratorio.springboot21.repository.CategoriaRepository;
 import com.laboratorio.springboot21.repository.ProductoRepository;
 import com.laboratorio.springboot21.service.CategoriaService;
 import com.laboratorio.springboot21.service.ProductoServiceImpl;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -258,6 +258,103 @@ public class ProductoServiceTest {
         verify(this.categoriaService).findCategoriaById(1);
         verify(this.productoRepository).save(any(Producto.class));
 
+    }
+
+    @Test
+    void testUpdateProducto_ProductNotFound(){
+        ProductoRequest request = new ProductoRequest(
+                1,"Mouse",10.0);
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception=
+                assertThrows(ResourceNotFoundException.class,
+                        ()->{this.productoService.updateProducto(1,request);});
+
+        assertEquals("No se puede efectuar la modificación, " +
+                "El producto no existe.",
+                exception.getMessage());
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository,never()).findProductoByNombre("Mouse");
+        verify(this.categoriaService,never()).findCategoriaById(1);
+        verify(this.productoRepository,never()).save(any(Producto.class));
+    }
+
+    @Test
+    void testUpdateProducto_DuplicateName(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ProductoResponse productoDB1 =
+                new ProductoResponse(1,1,"Generic Mouse",
+                        9.0,LocalDate.now());
+        ProductoResponse productoDB2 =
+                new ProductoResponse(2,1,"Mouse",
+                        9.0,LocalDate.now());
+
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.of(productoDB1));
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.of(productoDB2));
+
+        InvalidOperationException eception = assertThrows(
+                InvalidOperationException.class,
+                ()->{this.productoService.updateProducto(1,request);}
+        );
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository).findProductoByNombre("Mouse");
+        verify(categoriaService, never()).findCategoriaById(1);
+        verify(this.productoRepository,never()).save(any(Producto.class));
+    }
+
+    @Test
+    void testUpdateProducto_CategoriaNotExists(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ProductoResponse productoDB = new ProductoResponse(1,1,"Mouse",
+                9.0,LocalDate.now());
+
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.of(productoDB));
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.of(productoDB));
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                ()->{this.productoService.updateProducto(1,request);}
+        );
+
+        assertEquals("No Existe la Categoria Indicada " +
+                "no se puede modificar el producto.",exception.getMessage());
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository).findProductoByNombre("Mouse");
+        verify(this.categoriaService).findCategoriaById(1);
+        verify(this.productoRepository,never()).save(any(Producto.class));
+    }
+
+    @Test
+    void testDeleteProducto_ProductoDelete(){
+        ProductoResponse productoDB = new ProductoResponse(
+                1,1,"Mouse",10.0,LocalDate.now() );
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.of(productoDB));
+
+        boolean result = this.productoService.deleteProducto(1);
+
+        assertTrue(result);
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository).deleteById(1);
+    }
+
+    @Test
+    void testDeleteProducto_NotFoud(){
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.empty());
+
+        boolean result = this.productoService.deleteProducto(1);
+
+        assertFalse(result);
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository,never()).deleteById(1);
     }
 
 
