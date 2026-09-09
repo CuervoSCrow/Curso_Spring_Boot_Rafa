@@ -3,6 +3,7 @@ package com.laboratorio.springboot21.unit.service;
 import com.laboratorio.springboot21.dto.CategoriaResponse;
 import com.laboratorio.springboot21.dto.ProductoRequest;
 import com.laboratorio.springboot21.dto.ProductoResponse;
+import com.laboratorio.springboot21.exception.ResourceNotFoundException;
 import com.laboratorio.springboot21.model.Categoria;
 import com.laboratorio.springboot21.model.Producto;
 import com.laboratorio.springboot21.repository.CategoriaRepository;
@@ -186,7 +187,7 @@ public class ProductoServiceTest {
     }
 
     @Test
-    void createProduct_ProductoExists(){
+    void testCreateProduct_ReturnsExists(){
         ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
         ProductoResponse productoDB = new ProductoResponse(
                 1,
@@ -202,6 +203,26 @@ public class ProductoServiceTest {
         assertEquals("Mouse",producto.getNombre());
         verify(this.productoRepository).findProductoByNombre("Mouse");
         verify(this.categoriaService, never()).findCategoriaById(1);
+        verify(this.productoRepository, never()).save(any(Producto.class));
+    }
+
+    @Test
+    void testCreateProducto_CategoriaNotFound(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                ()->{
+                    this.productoService.createProducto(request);
+                });
+        assertEquals("No Existe la Categoria Indicada no se puede crear el producto.",
+                exception.getMessage());
+        verify(this.productoRepository).findProductoByNombre("Mouse");
+        verify(this.categoriaService).findCategoriaById(1);
         verify(this.productoRepository, never()).save(any(Producto.class));
     }
 
