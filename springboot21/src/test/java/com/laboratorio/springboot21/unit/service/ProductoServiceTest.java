@@ -177,6 +177,11 @@ public class ProductoServiceTest {
         ProductoResponse producto = this.productoService.createProducto(request);
 
         assertNotNull(producto);
+        assertEquals(1,producto.getCodigo());
+        assertEquals("Mouse",producto.getNombre());
+        verify(this.productoRepository).findProductoByNombre("Mouse");
+        verify(this.categoriaService).findCategoriaById(1);
+        verify(this.productoRepository).save(any(Producto.class));
 
     }
 
