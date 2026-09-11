@@ -44,7 +44,7 @@ public class ProductoServiceImpl implements ProductoService{
     }
 
     @Override
-    public ProductoResponse createProducto(Integer id, ProductoRequest request) {
+    public ProductoResponse createProducto(ProductoRequest request) {
         Optional<ProductoResponse> productoDB =
                 this.findProductoByNombre(request.getNombre());
         if(productoDB.isPresent()){

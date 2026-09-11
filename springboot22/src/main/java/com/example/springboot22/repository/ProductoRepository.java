@@ -22,9 +22,9 @@ public interface ProductoRepository extends
 
     @Query("""
             SELECT new com.example.springboot22.dto.ProductoResponse
-            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
-            FROM Producto p
-            WHERE p.nombre = :nombre
+                (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+                FROM Producto p
+                WHERE p.nombre = :nombre
             """)
     Optional<ProductoResponse> findProductoByNombre(String nombre);
 

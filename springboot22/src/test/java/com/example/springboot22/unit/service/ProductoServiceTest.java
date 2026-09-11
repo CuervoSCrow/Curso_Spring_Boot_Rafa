@@ -1,7 +1,13 @@
 package com.example.springboot22.unit.service;
 
+import com.example.springboot22.dto.CategoriaResponse;
+import com.example.springboot22.dto.ProductoRequest;
 import com.example.springboot22.dto.ProductoResponse;
+import com.example.springboot22.model.Categoria;
+import com.example.springboot22.model.Producto;
+import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
+import com.example.springboot22.service.CategoriaService;
 import com.example.springboot22.service.ProductoService;
 import com.example.springboot22.service.ProductoServiceImpl;
 import jakarta.inject.Inject;
@@ -25,6 +31,9 @@ public class ProductoServiceTest {
 
     @Mock
     private ProductoRepository productoRepository;
+
+    @Mock
+    private CategoriaService categoriaService;
 
     @InjectMocks
     private ProductoServiceImpl productoService;
@@ -140,6 +149,34 @@ public class ProductoServiceTest {
         assertFalse(productos.isEmpty());
         assertEquals(3,productos.size());
         verify(this.productoRepository).findByCategoriaIdOrderByNombreAsc(1);
+    }
+
+    @Test
+    void testCreateProducto(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        CategoriaResponse categoriaDB = new CategoriaResponse(1,"Periferico");
+        Producto productoDB = new Producto(1,
+                1,
+                "Mouse",
+                10.0,LocalDate.now(),
+                new Categoria(1,"Periferico"));
+
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.save(any(Producto.class)))
+                .thenReturn(productoDB);
+
+        ProductoResponse producto = this.productoService.createProducto(request);
+
+        assertNotNull(producto);
+        assertEquals(1,producto.getCodigo());
+        assertEquals("Mouse",producto.getNombre());
+        verify(this.productoRepository).findProductoByNombre(anyString());
+        verify(this.categoriaService).findCategoriaById(anyInt());
+        verify(this.productoRepository).save(any(Producto.class));
+
     }
 
 
