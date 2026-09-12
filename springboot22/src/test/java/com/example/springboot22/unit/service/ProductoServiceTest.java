@@ -179,6 +179,30 @@ public class ProductoServiceTest {
 
     }
 
+    @Test
+    void testCreateProducto_ProductoExists(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ProductoResponse productoDB = new ProductoResponse(
+                1,
+                1,
+                "Mouse",
+                10.0,LocalDate.now());
+
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.of(productoDB));
+
+        ProductoResponse producto = this.productoService.createProducto(request);
+
+        assertNotNull(producto);
+        assertEquals(1,producto.getCodigo());
+        assertEquals("Mouse",producto.getNombre());
+        verify(this.productoRepository).findProductoByNombre(anyString());
+        verify(this.categoriaService,never()).findCategoriaById(1);
+        verify(this.productoRepository,never()).save(any(Producto.class));
+    }
+
+    
+
 
 
 }
