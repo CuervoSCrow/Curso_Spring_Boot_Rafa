@@ -2,7 +2,7 @@ package com.example.springboot22.unit.repository;
 
 import com.example.springboot22.dto.ProductoResponse;
 import com.example.springboot22.repository.ProductoRepository;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;

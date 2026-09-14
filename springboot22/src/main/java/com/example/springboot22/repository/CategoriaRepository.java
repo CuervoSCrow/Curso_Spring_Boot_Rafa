@@ -14,9 +14,9 @@ public interface CategoriaRepository extends
         JpaRepository<Categoria, Integer> {
 
     @Query("""
-            SELECT new  com.example.springboot22.dto.CategoriaResponse
+            SELECT new com.example.springboot22.dto.CategoriaResponse
             (c.id, c.nombre)
-            FROM CategoriaResponse c
+            FROM Categoria c
             WHERE c.id = :id
             """)
     Optional<CategoriaResponse> findCategoriaById(@Param("id") Integer id);
