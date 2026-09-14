@@ -3,6 +3,7 @@ package com.example.springboot22.unit.service;
 import com.example.springboot22.dto.CategoriaResponse;
 import com.example.springboot22.dto.ProductoRequest;
 import com.example.springboot22.dto.ProductoResponse;
+import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Categoria;
 import com.example.springboot22.model.Producto;
 import com.example.springboot22.repository.CategoriaRepository;
@@ -201,7 +202,22 @@ public class ProductoServiceTest {
         verify(this.productoRepository,never()).save(any(Producto.class));
     }
 
-    
+    @Test
+    void testCreateProducto_CategoriaNotFound(){
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        when(this.productoRepository.findProductoByNombre(request.getNombre()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaService.findCategoriaById(request.getCategoriaId()))
+                .thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                ()->{
+                    this.productoService.createProducto(request);
+                });
+
+
+    }
 
 
 

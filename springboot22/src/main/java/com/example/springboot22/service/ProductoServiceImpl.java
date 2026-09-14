@@ -3,6 +3,8 @@ package com.example.springboot22.service;
 import com.example.springboot22.dto.CategoriaResponse;
 import com.example.springboot22.dto.ProductoRequest;
 import com.example.springboot22.dto.ProductoResponse;
+import com.example.springboot22.exception.InvalidOperationException;
+import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Producto;
 import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
@@ -16,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService{
     private final ProductoRepository productoRepository;
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaService categoriaService;
 
     @Override
     public Optional<ProductoResponse> findProductoById(Integer id) {
@@ -51,14 +53,43 @@ public class ProductoServiceImpl implements ProductoService{
             return productoDB.get();
         }
         Optional<CategoriaResponse> categoriaDB =
-                this.categoriaRepository.findCategoriaById(request.getCategoriaId());
+                this.categoriaService.findCategoriaById(request.getCategoriaId());
         if(categoriaDB.isEmpty()){
-            throw new RuntimeException("No existe la categoria indicada," +
+            throw new ResourceNotFoundException("No existe la categoria indicada," +
                     " no se puede crear el producto");
         }
         Producto producto = new Producto(request);
         Producto productoNuevo = this.productoRepository.save(producto);
         return new ProductoResponse(productoNuevo);
+    }
+
+    @Override
+    public ProductoResponse updateProducto(Integer id, ProductoRequest request) {
+//        checar si el producto existe
+        Optional<ProductoResponse> productoDB = this.findProductoById(id);
+        if(productoDB.isEmpty()){
+            throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
+                    "El producto no existe." + id);
+        }
+
+        Optional<ProductoResponse> otroProducto =
+                this.productoRepository.findProductoByNombre(request.getNombre());
+        if(otroProducto.isPresent() &&
+            !productoDB.get().getCodigo().equals(otroProducto.get().getCodigo())){
+            throw new InvalidOperationException("No se puede modificar el producto porque "+
+                    "existe otro con el mismo nombre.");
+        }
+
+        Optional<CategoriaResponse> categoriaDB =
+                this.categoriaService.findCategoriaById(request.getCategoriaId());
+        if(categoriaDB.isEmpty()){
+            throw new ResourceNotFoundException("No existe la categoria indicada, " +
+                    "no se puede modificar el producto");
+        }
+
+        Producto producto = new Producto(request);
+        Producto productoModificado = this.productoRepository.save(producto);
+        return new ProductoResponse(productoModificado);
     }
 
 
