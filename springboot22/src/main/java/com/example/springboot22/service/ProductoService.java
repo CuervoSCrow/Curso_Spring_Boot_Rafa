@@ -14,5 +14,6 @@ public interface ProductoService {
     List<ProductoResponse> findByCategoriaIdOrderByNombreAsc(Integer categoriaId);
     ProductoResponse createProducto(ProductoRequest request);
     ProductoResponse updateProducto(Integer id, ProductoRequest request);
+    boolean deleteProducto(Integer id);
 
 }

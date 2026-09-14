@@ -6,7 +6,6 @@ import com.example.springboot22.dto.ProductoResponse;
 import com.example.springboot22.exception.InvalidOperationException;
 import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Producto;
-import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -92,5 +91,14 @@ public class ProductoServiceImpl implements ProductoService{
         return new ProductoResponse(productoModificado);
     }
 
-
+    @Override
+    public boolean deleteProducto(Integer id) {
+//        chechar si el producto existe
+        Optional<ProductoResponse> productoDB = this.findProductoById(id);
+        if(productoDB.isEmpty()){
+            return false;
+        }
+        this.productoRepository.deleteById(id);
+        return true;
+    }
 }
