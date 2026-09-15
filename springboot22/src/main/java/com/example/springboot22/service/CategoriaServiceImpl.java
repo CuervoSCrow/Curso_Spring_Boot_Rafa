@@ -19,4 +19,11 @@ public class CategoriaServiceImpl implements CategoriaService{
     public Optional<CategoriaResponse> findCategoriaById(Integer id) {
         return this.categoriaRepository.findCategoriaById(id);
     }
+
+    @Override
+    public Optional<CategoriaResponse> findCategoriaByNombre(String nombre) {
+        return this.categoriaRepository.findCategoriaByNombre(nombre);
+    }
+
+
 }

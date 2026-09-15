@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,4 +55,32 @@ public class CategoriaServiceTest {
         assertTrue(categoria.isEmpty());
         verify(this.categoriaRepository).findCategoriaById(1);
     }
+
+    @Test
+    void findCategoriaByNombre_CategoriaExists() {
+        CategoriaResponse categoriaDB = new
+                CategoriaResponse(1, "perifericos");
+        when(categoriaRepository.findCategoriaByNombre(anyString()))
+                .thenReturn(Optional.of(categoriaDB));
+
+        Optional<CategoriaResponse> categoria =
+                this.categoriaService.findCategoriaByNombre("perifericos");
+
+        assertTrue(categoria.isPresent());
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+    }
+
+    @Test
+    void findCategoriaByNombre_CategoriaNotFound(){
+
+        when(categoriaRepository.findCategoriaByNombre(anyString()))
+                .thenReturn(Optional.empty());
+
+        Optional<CategoriaResponse> categoria =
+                this.categoriaService.findCategoriaByNombre("perifericos");
+
+        assertTrue(categoria.isEmpty());
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+    }
+
 }
