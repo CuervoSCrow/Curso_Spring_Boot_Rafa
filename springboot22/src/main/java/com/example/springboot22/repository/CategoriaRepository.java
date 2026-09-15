@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,6 +31,12 @@ public interface CategoriaRepository extends
     Optional<CategoriaResponse> findCategoriaByNombre(
             @Param("nombre") String nombre);
 
-    
+    @Query("""
+            SELECT new com.example.springboot22.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findAllOrderByNombreAsc();
 
 }

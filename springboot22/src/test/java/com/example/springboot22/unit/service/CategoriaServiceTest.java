@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,6 +83,26 @@ public class CategoriaServiceTest {
 
         assertTrue(categoria.isEmpty());
         verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+    }
+
+    @Test
+    void findAllOrderByNombreAscTest(){
+        List<CategoriaResponse> categoriaDB = new ArrayList<>(
+                List.of(
+                        new CategoriaResponse(1, "impresoras"),
+                        new CategoriaResponse(2, "monitores"),
+                        new CategoriaResponse(3, "perifericos")
+                )
+        );
+        when(categoriaRepository.findAllOrderByNombreAsc())
+                .thenReturn(categoriaDB);
+
+        List<CategoriaResponse> categorias =
+                this.categoriaService.findAllOrderByNombreAsc();
+
+        assertFalse(categorias.isEmpty());
+        assertEquals(3, categorias.size());
+        verify(this.categoriaRepository).findAllOrderByNombreAsc();
     }
 
 }

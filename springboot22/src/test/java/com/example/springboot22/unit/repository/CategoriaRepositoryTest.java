@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -38,6 +39,13 @@ public class CategoriaRepositoryTest {
         assertEquals(3, categoriaResponse.getId());
     }
 
+    @Test
+    void findAllOrderByNombreAscTest(){
+        List<CategoriaResponse> response =
+                categoriaRepository.findAllOrderByNombreAsc();
+
+        assertEquals(3,response.size());
+    }
 
 
 }
