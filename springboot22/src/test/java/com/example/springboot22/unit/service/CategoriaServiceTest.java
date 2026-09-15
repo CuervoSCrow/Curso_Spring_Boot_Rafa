@@ -105,4 +105,20 @@ public class CategoriaServiceTest {
         verify(this.categoriaRepository).findAllOrderByNombreAsc();
     }
 
+    @Test
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
+        List<CategoriaResponse> categoriasDB = List.of(
+                new CategoriaResponse(2,"Monitores")
+        );
+        when(this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(anyString()))
+                .thenReturn(categoriasDB);
+
+        List<CategoriaResponse> categorias =
+                this.categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc("NitO");
+
+        assertFalse(categorias.isEmpty());
+        assertEquals(1,categorias.size());
+        verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("NitO");
+    }
+
 }

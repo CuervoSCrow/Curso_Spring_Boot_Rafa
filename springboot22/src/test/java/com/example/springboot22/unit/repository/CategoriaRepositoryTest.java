@@ -47,5 +47,13 @@ public class CategoriaRepositoryTest {
         assertEquals(3,response.size());
     }
 
+    @Test
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
+        String infix = "TEgo";
+        List<CategoriaResponse> response =
+                categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
+        assertEquals(3,response.size());
+    }
+
 
 }

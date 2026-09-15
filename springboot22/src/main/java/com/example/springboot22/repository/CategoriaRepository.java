@@ -39,4 +39,14 @@ public interface CategoriaRepository extends
             """)
     List<CategoriaResponse> findAllOrderByNombreAsc();
 
+    @Query("""
+            SELECT new com.example.springboot22.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+            ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+            @Param("nombre") String nombre);
+
 }
