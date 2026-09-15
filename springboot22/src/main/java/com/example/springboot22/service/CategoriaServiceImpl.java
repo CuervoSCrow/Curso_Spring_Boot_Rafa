@@ -1,6 +1,8 @@
 package com.example.springboot22.service;
 
+import com.example.springboot22.dto.CategoriaRequest;
 import com.example.springboot22.dto.CategoriaResponse;
+import com.example.springboot22.model.Categoria;
 import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,17 @@ public class CategoriaServiceImpl implements CategoriaService{
         return this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(nombre);
     }
 
-
+    @Override
+    public CategoriaResponse createCategoria(CategoriaRequest request) {
+            Optional<CategoriaResponse> categoriaDB =
+                    this.categoriaRepository.findCategoriaByNombre(request.getNombre());
+            if(categoriaDB.isPresent()){
+                return categoriaDB.get();
+            }
+            Categoria categoria = new Categoria(request);
+           Categoria categoriaNueva = this.categoriaRepository.save(categoria);
+           return new CategoriaResponse(categoriaNueva);
+    }
 
 
 }

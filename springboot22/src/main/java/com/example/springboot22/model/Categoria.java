@@ -1,5 +1,6 @@
 package com.example.springboot22.model;
 
+import com.example.springboot22.dto.CategoriaRequest;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class Categoria {
     @JsonManagedReference
     private List<Producto> productos;
 
+    public Categoria(CategoriaRequest request) {
+        this.nombre = request.getNombre();
+    }
 
     public Categoria(Integer id, String nombre){
         this.id = id;
