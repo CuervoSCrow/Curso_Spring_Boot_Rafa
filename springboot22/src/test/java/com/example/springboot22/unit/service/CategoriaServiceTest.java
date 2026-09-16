@@ -2,6 +2,8 @@ package com.example.springboot22.unit.service;
 
 import com.example.springboot22.dto.CategoriaRequest;
 import com.example.springboot22.dto.CategoriaResponse;
+import com.example.springboot22.exception.InvalidOperationException;
+import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Categoria;
 import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
@@ -32,6 +34,10 @@ public class CategoriaServiceTest {
     @InjectMocks
     private CategoriaServiceImpl categoriaService;
 
+
+//------------------<TESTS>------------------
+
+//    ---------------<BUSQUEDAS>------------------
     @Test
     void testFindCategoriaById_CategoriaExists() {
         CategoriaResponse categoriaDB = new CategoriaResponse(
@@ -123,6 +129,7 @@ public class CategoriaServiceTest {
         verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("NitO");
     }
 
+    //------------------<CREACION>------------------
     @Test
     void createCategoriaTest_CategoriaCreated(){
         CategoriaRequest request =
@@ -161,4 +168,122 @@ public class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaByNombre("perifericos");
         verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
+
+    @Test
+    void categoriaUpdateTest_CategoriaUpdated(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+        CategoriaResponse categoriaDB = new CategoriaResponse(1, "perifericos");
+        Categoria categoriaModificada = new Categoria(1, "periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(anyInt()))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.categoriaRepository.findCategoriaByNombre(anyString()))
+                .thenReturn(Optional.empty());
+        when(this.categoriaRepository.save(any(Categoria.class)))
+                .thenReturn(categoriaModificada);
+
+        CategoriaResponse categoria = this.categoriaService.updateCategoria(1, request);
+
+        assertNotNull(categoria);
+        assertEquals(1,categoria.getId());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
+        verify(this.categoriaRepository).save(any(Categoria.class));
+    }
+
+    //------------------<ACTUALIZACION>------------------
+
+    @Test
+    void categoriaUpdateTest_ReturnNotFound(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(anyInt()))
+                .thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                ()->{this.categoriaService.updateCategoria(1,request);}
+        );
+        assertEquals("No se puede efectuar la modificación, " +
+                "la categoria no existe",exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository,never()).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository,never()).save(any(Categoria.class));
+    }
+
+    @Test
+    void categoriaUpdateTest_DuplicatedName(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+        CategoriaResponse categoriaDB1 = new CategoriaResponse(1, "perifericos");
+        CategoriaResponse categoriaDB2 = new CategoriaResponse(2, "periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB1));
+        when(this.categoriaRepository.findCategoriaByNombre(request.getNombre()))
+                .thenReturn(Optional.of(categoriaDB2));
+
+        InvalidOperationException exception = assertThrows(
+                InvalidOperationException.class,
+                ()->{this.categoriaService.updateCategoria(1,request);}
+        );
+        assertEquals("No se puede efectuar la modificación, " +
+                "el nombre de la categoria ya existe",exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
+        verify(this.categoriaRepository,never()).save(any(Categoria.class));
+    }
+
+    //------------------<ELIMINACION>------------------
+
+    @Test
+    void categoriaDeleteTest_CategoryDeleted(){
+        CategoriaResponse categoriaDB = new CategoriaResponse(1, "perifericos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.countByCategoriaId(1))
+                .thenReturn(0L);
+
+        boolean result = this.categoriaService.deleteCategoria(1);
+
+        assertTrue(result);
+        verify(categoriaRepository).findCategoriaById(1);
+        verify(productoRepository).countByCategoriaId(1);
+        verify(categoriaRepository).deleteById(1);
+    }
+
+    @Test
+    void categoriaDeleteTest_CategoryNotFound(){
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.empty());
+
+        boolean result = this.categoriaService.deleteCategoria(1);
+
+        assertFalse(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository, never()).countByCategoriaId(1);
+        verify(this.categoriaRepository, never()).deleteById(1);
+    }
+
+    @Test
+    void categoriaDeleteTest_HasProducts(){
+        CategoriaResponse categoriaDB = new CategoriaResponse(1, "perifericos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.countByCategoriaId(1))
+                .thenReturn(2L);
+        InvalidOperationException exception = assertThrows(
+                InvalidOperationException.class,
+                ()->{this.categoriaService.deleteCategoria(1);}
+        );
+        assertEquals("No se puede eliminar la categoria, " +
+                "la categoria tiene productos asociados",exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository).countByCategoriaId(1);
+        verify(this.categoriaRepository, never()).deleteById(1);
+    }
+
+
+
 }

@@ -2,6 +2,9 @@ package com.example.springboot22.service;
 
 import com.example.springboot22.dto.CategoriaRequest;
 import com.example.springboot22.dto.CategoriaResponse;
+import com.example.springboot22.dto.ProductoResponse;
+import com.example.springboot22.exception.InvalidOperationException;
+import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Categoria;
 import com.example.springboot22.repository.CategoriaRepository;
 import com.example.springboot22.repository.ProductoRepository;
@@ -48,6 +51,42 @@ public class CategoriaServiceImpl implements CategoriaService{
             Categoria categoria = new Categoria(request);
            Categoria categoriaNueva = this.categoriaRepository.save(categoria);
            return new CategoriaResponse(categoriaNueva);
+    }
+
+    @Override
+    public CategoriaResponse updateCategoria(Integer id, CategoriaRequest request) {
+        Optional<CategoriaResponse> categoriaDB =
+                this.categoriaRepository.findCategoriaById(id);
+        if(categoriaDB.isEmpty()){
+            throw new ResourceNotFoundException("No se puede efectuar la modificación, " +
+                    "la categoria no existe");
+        }
+        Optional<CategoriaResponse> otraCategoria =
+                this.categoriaRepository.findCategoriaByNombre(request.getNombre());
+        if(otraCategoria.isPresent() &&
+                !categoriaDB.get().getId().equals(otraCategoria.get().getId())){
+            throw new InvalidOperationException("No se puede efectuar la modificación, " +
+                    "el nombre de la categoria ya existe");
+        }
+        Categoria categoria = new Categoria(id,request.getNombre());
+        Categoria categoriaModificada = this.categoriaRepository.save(categoria);
+        return new CategoriaResponse(categoriaModificada);
+    }
+
+    @Override
+    public boolean deleteCategoria(Integer id) {
+        Optional<CategoriaResponse> categoriaDB =
+                this.findCategoriaById(1);
+        if(categoriaDB.isEmpty()){
+            return false;
+        }
+        long nProductos = productoRepository.countByCategoriaId(id);
+        if(nProductos>0){
+            throw new InvalidOperationException("No se puede eliminar la categoria, " +
+                    "la categoria tiene productos asociados");
+        }
+        this.categoriaRepository.deleteById(id);
+        return true;
     }
 
 
