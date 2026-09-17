@@ -2,7 +2,6 @@ package com.example.springboot22.service;
 
 import com.example.springboot22.dto.CategoriaRequest;
 import com.example.springboot22.dto.CategoriaResponse;
-import com.example.springboot22.dto.ProductoResponse;
 import com.example.springboot22.exception.InvalidOperationException;
 import com.example.springboot22.exception.ResourceNotFoundException;
 import com.example.springboot22.model.Categoria;
@@ -76,7 +75,7 @@ public class CategoriaServiceImpl implements CategoriaService{
     @Override
     public boolean deleteCategoria(Integer id) {
         Optional<CategoriaResponse> categoriaDB =
-                this.findCategoriaById(1);
+                this.findCategoriaById(id);
         if(categoriaDB.isEmpty()){
             return false;
         }

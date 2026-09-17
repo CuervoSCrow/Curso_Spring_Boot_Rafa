@@ -169,6 +169,8 @@ public class CategoriaServiceTest {
         verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
 
+    //------------------<ACTUALIZACION>------------------
+
     @Test
     void categoriaUpdateTest_CategoriaUpdated(){
         CategoriaRequest request = new CategoriaRequest("periféricos");
@@ -190,8 +192,6 @@ public class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
         verify(this.categoriaRepository).save(any(Categoria.class));
     }
-
-    //------------------<ACTUALIZACION>------------------
 
     @Test
     void categoriaUpdateTest_ReturnNotFound(){
