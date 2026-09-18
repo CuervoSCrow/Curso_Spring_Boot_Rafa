@@ -1,5 +1,60 @@
 package com.laboratorio.springboot23.repository;
 
-public interface ProductoRepository {
+import com.laboratorio.springboot23.dto.ProductoResponse;
+import com.laboratorio.springboot23.model.Producto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ProductoRepository
+        extends JpaRepository<Producto, Integer> {
+    @Query("""
+            SELECT new com.laboratorio.springboot23.dto.ProductoResponse
+            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+            FROM Producto p
+            WHERE p.id=:id
+            """)
+    Optional<ProductoResponse> findProductoById(@Param("id") Integer id);
+
+    @Query("""
+            SELECT new com.laboratorio.springboot23.dto.ProductoResponse
+            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+            FROM Producto p
+            WHERE p.nombre=:nombre
+            """)
+    Optional<ProductoResponse> findProductoByNombre(@Param("nombre") String nombre);
+
+    @Query("""
+            SELECT new com.laboratorio.springboot23.dto.ProductoResponse
+            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+            FROM Producto p
+            ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findAllOrderNombreAsc();
+
+    @Query("""
+            SELECT new com.laboratorio.springboot23.dto.ProductoResponse
+            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+            FROM Producto p
+            WHERE UPPER(p.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
+            ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc
+            (@Param("infix") String infix);
+
+    @Query("""
+            SELECT new com.laboratorio.springboot23.dto.ProductoResponse
+            (p.id, p.categoriaId, p.nombre, p.precio, p.fechaIngreso)
+            FROM Producto p
+            WHERE p.categoriaId=:categoriaId
+            ORDER BY p.nombre ASC
+            """)
+    List<ProductoResponse> findByCategoriaIdOrderByNombreAsc
+            (@Param("categoriaId") Integer categoriaId);
+
+    long countByCategoriaId(Integer categoriaId);
 
 }

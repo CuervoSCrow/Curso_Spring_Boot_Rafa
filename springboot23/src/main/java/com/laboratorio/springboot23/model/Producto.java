@@ -1,6 +1,7 @@
 package com.laboratorio.springboot23.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.laboratorio.springboot23.dto.ProductoRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,13 @@ public class Producto {
     @JoinColumn(name="categoria_id",nullable = false,
                 insertable = false,updatable = false)
     private Categoria categoria;
+
+    public Producto(ProductoRequest request){
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = LocalDate.now();
+    }
 
     @Override
     public String toString() {
