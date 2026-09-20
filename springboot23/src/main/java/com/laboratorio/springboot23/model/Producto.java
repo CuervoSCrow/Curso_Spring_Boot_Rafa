@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "productos")
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 public class Producto {
+    private static final ZoneId ZONE= ZoneId.of("UTC");
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -42,7 +44,7 @@ public class Producto {
         this.categoriaId = request.getCategoriaId();
         this.nombre = request.getNombre();
         this.precio = request.getPrecio();
-        this.fechaIngreso = LocalDate.now();
+        this.fechaIngreso = LocalDate.now(ZONE);
     }
 
     @Override

@@ -15,4 +15,5 @@ public interface ProductoService {
     ProductoResponse createProducto(ProductoRequest request);
     ProductoResponse updateProducto(Integer id,ProductoRequest request);
     boolean deleteProducto(Integer id);
+
 }

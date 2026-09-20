@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService{
     private final ProductoRepository productoRepository;
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaService categoriaService;
 
     @Override
     public Optional<ProductoResponse> findProductoById(Integer id) {
@@ -53,7 +53,7 @@ public class ProductoServiceImpl implements ProductoService{
             return productoDB.get();
         }
         Optional<CategoriaResponse> categoriaDB =
-                this.categoriaRepository.findCategoriaById(request.getCategoriaId());
+                this.categoriaService.findCategoriaById(request.getCategoriaId());
         if(categoriaDB.isEmpty()){
             throw new ResourceNotFoundException("No existe la categoria indicada," +
                     "no se puede crear el producto");
@@ -80,7 +80,7 @@ public class ProductoServiceImpl implements ProductoService{
         }
 
         Optional<CategoriaResponse> categoriaDB =
-                this.categoriaRepository.findCategoriaById(request.getCategoriaId());
+                this.categoriaService.findCategoriaById(request.getCategoriaId());
         if(categoriaDB.isEmpty()){
             throw new ResourceNotFoundException("No existe la categoria indicada," +
                     "no se puede modificar el producto");

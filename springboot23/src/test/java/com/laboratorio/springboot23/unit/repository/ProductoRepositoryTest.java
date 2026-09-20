@@ -12,12 +12,12 @@ import java.util.List;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class ProductoRepositoryTest {
+class ProductoRepositoryTest {
     @Autowired
     private ProductoRepository productoRepository;
 
     @Test
-    public void testFindProductoById() {
+    void testFindProductoById() {
         Integer id = 4;
         ProductoResponse response =
                 productoRepository.findProductoById(id).get();
@@ -27,7 +27,7 @@ public class ProductoRepositoryTest {
     }
 
     @Test
-    public void testFindProductoByNombre(){
+    void testFindProductoByNombre(){
         String name="Producto 7";
         ProductoResponse response =
                 productoRepository.findProductoByNombre(name).get();
@@ -36,14 +36,14 @@ public class ProductoRepositoryTest {
     }
 
     @Test
-    public void testFindAllOrderNombreAsc(){
+    void testFindAllOrderNombreAsc(){
         List<ProductoResponse> productos =
                 productoRepository.findAllOrderNombreAsc();
         assertEquals(9,productos.size());
     }
 
     @Test
-    public void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
+    void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
         String infix = "OdUc";
         List<ProductoResponse> productos =
                 productoRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
@@ -51,7 +51,7 @@ public class ProductoRepositoryTest {
     }
 
     @Test
-    public void testFindByCategoriaIdOrderByNombreAsc(){
+    void testFindByCategoriaIdOrderByNombreAsc(){
         Integer categoriaId=3;
         List<ProductoResponse> productosDB =
                 productoRepository.findByCategoriaIdOrderByNombreAsc(categoriaId);
