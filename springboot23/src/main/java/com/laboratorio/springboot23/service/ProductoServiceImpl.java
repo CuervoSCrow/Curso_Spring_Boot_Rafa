@@ -6,7 +6,6 @@ import com.laboratorio.springboot23.dto.ProductoResponse;
 import com.laboratorio.springboot23.exception.InvalidOperationException;
 import com.laboratorio.springboot23.exception.ResourceNotFoundException;
 import com.laboratorio.springboot23.model.Producto;
-import com.laboratorio.springboot23.repository.CategoriaRepository;
 import com.laboratorio.springboot23.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -76,7 +75,7 @@ public class ProductoServiceImpl implements ProductoService{
         if(otroProducto.isPresent() &&
             !productoDB.get().getCodigo().equals(otroProducto.get().getCodigo())){
             throw new InvalidOperationException("No se puede modificar el producto por que " +
-                    "existe otro con el mismo nombre " + id);
+                    "existe otro con el mismo nombre ");
         }
 
         Optional<CategoriaResponse> categoriaDB =
@@ -86,7 +85,7 @@ public class ProductoServiceImpl implements ProductoService{
                     "no se puede modificar el producto");
         }
 
-        Producto producto = new Producto(request);
+        Producto producto = new Producto(productoDB.get(),request);
         Producto productoModificado = this.productoRepository.save(producto);
         return new ProductoResponse(productoModificado);
     }

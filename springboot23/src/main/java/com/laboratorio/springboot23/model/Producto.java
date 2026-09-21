@@ -2,6 +2,7 @@ package com.laboratorio.springboot23.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.laboratorio.springboot23.dto.ProductoRequest;
+import com.laboratorio.springboot23.dto.ProductoResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +48,14 @@ public class Producto {
         this.fechaIngreso = LocalDate.now(ZONE);
     }
 
+    public Producto(ProductoResponse response,
+                    ProductoRequest request){
+        this.id = response.getCodigo();
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = response.getFechaIngreso();
+    }
     @Override
     public String toString() {
         return "Producto{" +
