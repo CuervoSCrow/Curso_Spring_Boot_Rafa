@@ -1,6 +1,7 @@
 package com.laboratorio.springboot24.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.laboratorio.springboot24.dto.CategoriaRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,10 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria")
     @JsonManagedReference
     private List<Producto> productos;
+
+    public Categoria(CategoriaRequest request){
+        this.nombre = request.getNombre();
+    }
 
     public Categoria(Integer id, String nombre){
         this.id = id;

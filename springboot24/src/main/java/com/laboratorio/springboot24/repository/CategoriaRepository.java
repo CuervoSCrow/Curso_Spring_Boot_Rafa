@@ -18,7 +18,7 @@ public interface CategoriaRepository extends
             FROM Categoria c
             WHERE c.id = :id
             """)
-    Optional<CategoriaResponse> fidnCategoriaById(@Param("id") Integer id);
+    Optional<CategoriaResponse> findCategoriaById(@Param("id") Integer id);
     @Query("""
             SELECT new com.laboratorio.springboot24.dto.CategoriaResponse
             (c.id, c.nombre)

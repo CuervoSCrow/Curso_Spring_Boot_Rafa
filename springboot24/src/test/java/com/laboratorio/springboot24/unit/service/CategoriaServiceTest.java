@@ -1,13 +1,15 @@
-package com.laboratorio.springboot23.unit.service;
+package com.laboratorio.springboot24.unit.service;
 
-import com.laboratorio.springboot23.dto.CategoriaRequest;
-import com.laboratorio.springboot23.dto.CategoriaResponse;
-import com.laboratorio.springboot23.exception.InvalidOperationException;
-import com.laboratorio.springboot23.exception.ResourceNotFoundException;
-import com.laboratorio.springboot23.model.Categoria;
-import com.laboratorio.springboot23.repository.CategoriaRepository;
-import com.laboratorio.springboot23.repository.ProductoRepository;
-import com.laboratorio.springboot23.service.CategoriaServiceImpl;
+
+import com.laboratorio.springboot24.dto.CategoriaRequest;
+import com.laboratorio.springboot24.dto.CategoriaResponse;
+
+import com.laboratorio.springboot24.exception.InvalidOperationException;
+import com.laboratorio.springboot24.exception.ResourceNotFoundException;
+import com.laboratorio.springboot24.model.Categoria;
+import com.laboratorio.springboot24.repository.CategoriaRepository;
+import com.laboratorio.springboot24.repository.ProductoRepository;
+import com.laboratorio.springboot24.service.CategoriaServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,17 +21,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+
+@ExtendWith(MockitoExtension .class)
 class CategoriaServiceTest {
     @Mock
     private CategoriaRepository categoriaRepository;
@@ -40,11 +37,8 @@ class CategoriaServiceTest {
     @InjectMocks
     private CategoriaServiceImpl categoriaService;
 
-    //------------------<TESTS>------------------
-
-    //    ---------------<BUSQUEDAS>------------------
     @Test
-    void testFindCategoriaById_CategoriaExists() {
+    void findCategoriaByIdTest_CategoryExist() {
         CategoriaResponse categoriaDB = new CategoriaResponse(
                 1,
                 "perifericos");
@@ -52,52 +46,43 @@ class CategoriaServiceTest {
                 .thenReturn(Optional.of(categoriaDB));
 
         Optional<CategoriaResponse> categoria =
-                this.categoriaService.findCategoriaById(1);
+                categoriaService.findCategoriaById(1);
 
         assertTrue(categoria.isPresent());
-        assertEquals("perifericos",categoria.get().getNombre());
-        verify(this.categoriaRepository).findCategoriaById(1);
-    }
+        assertEquals("perifericos", categoria.get().getNombre());
+        verify(categoriaRepository).findCategoriaById(1);
 
+    }
     @Test
-    void testFindCategoriaById_CategoriaNotFound(){
+    void findCategoriaByIdTest_CategoryNotFound(){
         when(categoriaRepository.findCategoriaById(1))
                 .thenReturn(Optional.empty());
-
         Optional<CategoriaResponse> categoria =
-                this.categoriaService.findCategoriaById(1);
-
+                categoriaService.findCategoriaById(1);
         assertTrue(categoria.isEmpty());
-        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(categoriaRepository).findCategoriaById(1);
     }
-
     @Test
-    void findCategoriaByNombre_CategoriaExists() {
+    void findCategoriaByNombreTest_CategoriaExists(){
         CategoriaResponse categoriaDB = new
                 CategoriaResponse(1, "perifericos");
-        when(categoriaRepository.findCategoriaByNombre(anyString()))
+        when(this.categoriaRepository.findCategoriaByNombre("perifericos"))
                 .thenReturn(Optional.of(categoriaDB));
-
         Optional<CategoriaResponse> categoria =
-                this.categoriaService.findCategoriaByNombre("perifericos");
-
+                categoriaService.findCategoriaByNombre("perifericos");
         assertTrue(categoria.isPresent());
-        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+        assertEquals("perifericos", categoria.get().getNombre());
+        verify(categoriaRepository).findCategoriaByNombre("perifericos");
     }
-
     @Test
-    void findCategoriaByNombre_CategoriaNotFound(){
-
-        when(categoriaRepository.findCategoriaByNombre(anyString()))
-                .thenReturn(Optional.empty());
-
-        Optional<CategoriaResponse> categoria =
-                this.categoriaService.findCategoriaByNombre("perifericos");
-
-        assertTrue(categoria.isEmpty());
-        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+    void findCategoriaByNombreTest_CategoriaNotFound(){
+       when(this.categoriaRepository.findCategoriaByNombre(anyString()))
+               .thenReturn(Optional.empty());
+       Optional<CategoriaResponse> categoria =
+               categoriaService.findCategoriaByNombre("perifericos");
+       assertTrue(categoria.isEmpty());
+       verify(categoriaRepository).findCategoriaByNombre("perifericos");
     }
-
     @Test
     void findAllOrderByNombreAscTest(){
         List<CategoriaResponse> categoriaDB = new ArrayList<>(
@@ -107,34 +92,32 @@ class CategoriaServiceTest {
                         new CategoriaResponse(3, "perifericos")
                 )
         );
-        when(categoriaRepository.findAllOrderByNombreAsc())
+        when(this.categoriaRepository.findAllOrderByNombreAsc())
                 .thenReturn(categoriaDB);
-
         List<CategoriaResponse> categorias =
-                this.categoriaService.findAllOrderByNombreAsc();
+                categoriaService.findAllOrderByNombreAsc();
 
         assertFalse(categorias.isEmpty());
         assertEquals(3, categorias.size());
-        verify(this.categoriaRepository).findAllOrderByNombreAsc();
+        assertEquals(categoriaDB, categorias);
+        verify(categoriaRepository).findAllOrderByNombreAsc();
     }
-
     @Test
     void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
+        String infix="NiTo";
         List<CategoriaResponse> categoriasDB = List.of(
                 new CategoriaResponse(2,"Monitores")
         );
-        when(this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(anyString()))
+        when(this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix))
                 .thenReturn(categoriasDB);
-
         List<CategoriaResponse> categorias =
-                this.categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc("NitO");
+                categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
 
         assertFalse(categorias.isEmpty());
-        assertEquals(1,categorias.size());
-        verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc("NitO");
+        assertEquals(1, categorias.size());
+        assertEquals(categoriasDB, categorias);
+        verify(categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
     }
-
-        //------------------<CREACION>------------------
     @Test
     void createCategoriaTest_CategoriaCreated(){
         CategoriaRequest request =
@@ -145,37 +128,33 @@ class CategoriaServiceTest {
                 .thenReturn(Optional.empty());
         when(this.categoriaRepository.save(any(Categoria.class)))
                 .thenReturn(categoriaNueva);
-
         CategoriaResponse categoria =
-                this.categoriaService.createCategoria(request);
+                categoriaService.createCategoria(request);
 
         assertNotNull(categoria);
         assertEquals(1,categoria.getId());
         assertEquals("perifericos",categoria.getNombre());
         verify(this.categoriaRepository).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository).save(any(Categoria.class));
-    }
 
+    }
     @Test
-    void createCategoriaTest_ReturnExsisting(){
+    void createCategoriaTest_CategoryExists(){
         CategoriaRequest request =new CategoriaRequest("perifericos");
         CategoriaResponse categoriaDB=
                 new CategoriaResponse(1,"perifericos");
-
-        when(categoriaRepository.findCategoriaByNombre(anyString()))
+        when(this.categoriaRepository.findCategoriaByNombre("perifericos"))
                 .thenReturn(Optional.of(categoriaDB));
-
-        CategoriaResponse categoria = this.categoriaService.createCategoria(request);
+        CategoriaResponse categoria =
+                categoriaService.createCategoria(request);
 
         assertNotNull(categoria);
         assertEquals(1,categoria.getId());
         assertEquals("perifericos",categoria.getNombre());
-        verify(this.categoriaRepository).findCategoriaByNombre("perifericos");
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository, never()).save(any(Categoria.class));
+
     }
-
-    //------------------<ACTUALIZACION>------------------
-
     @Test
     void categoriaUpdateTest_CategoriaUpdated(){
         CategoriaRequest request = new CategoriaRequest("periféricos");
@@ -197,7 +176,6 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
         verify(this.categoriaRepository).save(any(Categoria.class));
     }
-
     @Test
     void categoriaUpdateTest_ReturnNotFound(){
         CategoriaRequest request = new CategoriaRequest("periféricos");
@@ -215,7 +193,6 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository,never()).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository,never()).save(any(Categoria.class));
     }
-
     @Test
     void categoriaUpdateTest_DuplicatedName(){
         CategoriaRequest request = new CategoriaRequest("periféricos");
@@ -237,9 +214,6 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaByNombre("periféricos");
         verify(this.categoriaRepository,never()).save(any(Categoria.class));
     }
-
-    //------------------<ELIMINACION>------------------
-
     @Test
     void categoriaDeleteTest_CategoryDeleted(){
         CategoriaResponse categoriaDB = new CategoriaResponse(1, "perifericos");
@@ -256,7 +230,6 @@ class CategoriaServiceTest {
         verify(productoRepository).countByCategoriaId(1);
         verify(categoriaRepository).deleteById(1);
     }
-
     @Test
     void categoriaDeleteTest_CategoryNotFound(){
         when(this.categoriaRepository.findCategoriaById(1))
@@ -269,7 +242,6 @@ class CategoriaServiceTest {
         verify(this.productoRepository, never()).countByCategoriaId(1);
         verify(this.categoriaRepository, never()).deleteById(1);
     }
-
     @Test
     void categoriaDeleteTest_HasProducts(){
         CategoriaResponse categoriaDB = new CategoriaResponse(1, "perifericos");
@@ -288,5 +260,4 @@ class CategoriaServiceTest {
         verify(this.productoRepository).countByCategoriaId(1);
         verify(this.categoriaRepository, never()).deleteById(1);
     }
-
 }

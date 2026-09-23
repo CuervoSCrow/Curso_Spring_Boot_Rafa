@@ -14,19 +14,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class CategoriaRepositoryTest {
+class CategoriaRepositoryTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
     @Test
-    public void testFindCaregoriaByIdTest() {
+    void testFindCaregoriaByIdTest() {
         Integer id=2;
         CategoriaResponse response =
-                categoriaRepository.fidnCategoriaById(id).get();
+                categoriaRepository.findCategoriaById(id).get();
         assertEquals(id,response.getId());
     }
     @Test
-    public void findCategoriaByNombreTest(){
+    void findCategoriaByNombreTest(){
         String nombre ="Categoria 3";
         CategoriaResponse response =
                 categoriaRepository.findCategoriaByNombre(nombre).get();
@@ -34,13 +34,13 @@ public class CategoriaRepositoryTest {
         assertEquals(3,response.getId());
     }
     @Test
-    public void findAllOrderByNombreAscTest(){
+    void findAllOrderByNombreAscTest(){
         List<CategoriaResponse> response =
                 categoriaRepository.findAllOrderByNombreAsc();
         assertEquals(3,response.size());
     }
     @Test
-    public void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest(){
         String infix="TeGo";
         List<CategoriaResponse> response =
                 categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
