@@ -82,7 +82,6 @@ public class CategoriaController {
         }
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id){
         try{

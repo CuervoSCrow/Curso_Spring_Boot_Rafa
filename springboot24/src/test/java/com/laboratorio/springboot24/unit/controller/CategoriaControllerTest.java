@@ -3,6 +3,8 @@ package com.laboratorio.springboot24.unit.controller;
 import com.laboratorio.springboot24.controller.CategoriaController;
 import com.laboratorio.springboot24.dto.CategoriaRequest;
 import com.laboratorio.springboot24.dto.CategoriaResponse;
+import com.laboratorio.springboot24.exception.InvalidOperationException;
+import com.laboratorio.springboot24.exception.ResourceNotFoundException;
 import com.laboratorio.springboot24.service.CategoriaService;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +21,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
+
 
 @WebMvcTest(controllers = CategoriaController.class)
-public class CategoriaControllerTest {
+class CategoriaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -131,7 +133,7 @@ public class CategoriaControllerTest {
         this.mockMvc.perform(get("/api/categorias/"+infix))
                 .andExpect(status().isNoContent());
     }
-//    --------------||| Test Create |||--------------
+//    --------------||| Test CRUD |||--------------
     @Test
     void testCreate() throws Exception{
         CategoriaRequest request = new CategoriaRequest("Categoria Nueva");
@@ -148,6 +150,68 @@ public class CategoriaControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.nombre").value("Categoria Nueva"));
     }
+    @Test
+    void testUpdateNotFound() throws Exception{
+        int id = 1;
+        CategoriaRequest request = new CategoriaRequest("Categoria Modificada");
 
+        when(this.categoriaService.updateCategoria(anyInt(),any(CategoriaRequest.class)))
+                .thenThrow(new ResourceNotFoundException("Categoria no existe"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/categorias/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string("Categoria no existe"));
+    }
+    @Test
+    void testUpdateDuplicatedName() throws Exception{
+        int id=1;
+        CategoriaRequest request = new CategoriaRequest("Categoria Modificada");
+        when(categoriaService.updateCategoria(anyInt(),any(CategoriaRequest.class)))
+                .thenThrow(new InvalidOperationException("Existe una categoria con el mismo nombre"));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/categorias/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("Existe una categoria con el mismo nombre"));
+    }
+    @Test
+    void testDelete() throws Exception{
+        int id=1;
+
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenReturn(true);
+
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Se ha eliminado correctamente la " +
+                        "la categoria con id: " + id));
+
+    }
+    @Test
+    void testDeleteNotFound() throws Exception{
+        int id = 1;
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenReturn(false);
+
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No existe la categoria con id: " + id));
+    }
+    @Test
+    void testDeleteWithProductos() throws Exception{
+        int id=1;
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenThrow(new InvalidOperationException("La categoria tiene productos"));
+
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La categoria tiene productos"));
+    }
 
 }
