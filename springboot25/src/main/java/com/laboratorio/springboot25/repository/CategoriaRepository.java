@@ -19,4 +19,12 @@ public interface CategoriaRepository extends
             """)
     Optional<CategoriaResponse>findCategoriaById(
             @Param("id") Integer id);
+    @Query("""
+            SELECT new com.laboratorio.springboot25.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE c.nombre = :nombre
+            """)
+    Optional<CategoriaResponse>findCategoriaByNombre(
+            @Param("nombre") String nombre);
 }

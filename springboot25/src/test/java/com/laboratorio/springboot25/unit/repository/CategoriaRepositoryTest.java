@@ -11,15 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class CategoriaRepositoryTest {
+class CategoriaRepositoryTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
     @Test
-    public void testFindCategoriaById() {
+    void testFindCategoriaById() {
         Integer id = 2;
         CategoriaResponse response =
                 categoriaRepository.findCategoriaById(id).get();
         assertEquals(id, response.getId());
+    }
+    @Test
+    void testFindCategoriaByNombre() {
+        String nombre="Categoria 3";
+        CategoriaResponse response =
+                categoriaRepository.findCategoriaByNombre(nombre).get();
+        assertEquals(nombre, response.getNombre());
+        assertEquals(3, response.getId());
     }
 }
