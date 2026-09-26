@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -30,4 +32,11 @@ class CategoriaRepositoryTest {
         assertEquals(nombre, response.getNombre());
         assertEquals(3, response.getId());
     }
+    @Test
+    void testFindAllOrderByNombreAsc() {
+        List<CategoriaResponse> response =
+            this.categoriaRepository.findAllOrderByNombreAsc();
+        assertEquals(3,response.size());
+    }
+
 }

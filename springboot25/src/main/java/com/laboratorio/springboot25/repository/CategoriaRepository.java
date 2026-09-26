@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CategoriaRepository extends
@@ -27,4 +28,11 @@ public interface CategoriaRepository extends
             """)
     Optional<CategoriaResponse>findCategoriaByNombre(
             @Param("nombre") String nombre);
+    @Query("""
+            SELECT new com.laboratorio.springboot25.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            ORDER BY c.nombre ASC
+            """)
+    List<CategoriaResponse> findAllOrderByNombreAsc();
 }
