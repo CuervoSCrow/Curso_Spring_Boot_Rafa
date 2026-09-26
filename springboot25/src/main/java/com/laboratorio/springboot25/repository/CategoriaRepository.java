@@ -35,4 +35,12 @@ public interface CategoriaRepository extends
             ORDER BY c.nombre ASC
             """)
     List<CategoriaResponse> findAllOrderByNombreAsc();
+    @Query("""
+            SELECT new com.laboratorio.springboot25.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+            """)
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+            @Param("nombre") String nombre);
 }
