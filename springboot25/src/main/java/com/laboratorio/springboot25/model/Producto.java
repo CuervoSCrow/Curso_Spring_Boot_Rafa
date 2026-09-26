@@ -1,0 +1,71 @@
+package com.laboratorio.springboot25.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.laboratorio.springboot25.dto.ProductoRequest;
+import com.laboratorio.springboot25.dto.ProductoResponse;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+@Entity
+@Table(name = "productos")
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
+public class Producto {
+    private static final ZoneId ZONE = ZoneId.of("UTC");
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "categoria_id", nullable = false)
+    private Integer categoriaId;
+
+    @Column(name = "nombre", nullable = false,
+            length = 120, unique = true)
+    private String nombre;
+
+    @Column(name = "precio", nullable = false)
+    private Double precio;
+
+    @Column(name="fecha_ingreso",nullable = false)
+    private LocalDate fechaIngreso;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "categoria_id",nullable = false,
+            insertable = false,updatable = false)
+    private Categoria categoria;
+
+    public Producto(ProductoRequest request){
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = LocalDate.now(ZONE);
+    }
+
+    public Producto(ProductoResponse response,
+                    ProductoRequest request){
+        this.id = response.getCodigo();
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = response.getFechaIngreso();
+
+    }
+
+    @Override
+    public String toString() {
+        return "Producto{" +
+                "id=" + id +
+                ", categoriaId='" + categoriaId + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", fechaIngreso=" + fechaIngreso +
+                '}';
+    }
+}
