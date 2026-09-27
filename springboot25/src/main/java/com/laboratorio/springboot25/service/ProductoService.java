@@ -13,4 +13,5 @@ public interface ProductoService {
     List<ProductoResponse>findByNombreContainingIgnoreCaseOrderByNombreAsc(String infix);
     List<ProductoResponse>findCategoriaIdOrderByNombreAsc(Integer id);
     ProductoResponse createProducto(ProductoRequest producto);
+    ProductoResponse updateProducto(Integer id, ProductoRequest producto);
 }

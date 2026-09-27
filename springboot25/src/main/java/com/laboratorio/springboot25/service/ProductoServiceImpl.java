@@ -3,6 +3,7 @@ package com.laboratorio.springboot25.service;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
 import com.laboratorio.springboot25.dto.ProductoRequest;
 import com.laboratorio.springboot25.dto.ProductoResponse;
+import com.laboratorio.springboot25.exception.InvalidOperationException;
 import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import com.laboratorio.springboot25.model.Producto;
 import com.laboratorio.springboot25.repository.ProductoRepository;
@@ -57,5 +58,30 @@ public class ProductoServiceImpl implements ProductoService{
         Producto producto = new Producto(request);
         Producto productoNuevo = this.productoRepository.save(producto);
         return new ProductoResponse(productoNuevo);
+    }
+
+    @Override
+    public ProductoResponse updateProducto(Integer id, ProductoRequest request) {
+        Optional<ProductoResponse> productoDB = findProductoById(id);
+        if(productoDB.isEmpty()){
+            throw new ResourceNotFoundException("No se puede efectuar la modificacion, " +
+                    "el producto no existe");
+        }
+        Optional<ProductoResponse> otroProducto =
+                findProductoByNombre(request.getNombre());
+        if(otroProducto.isPresent() &&
+                !productoDB.get().getCodigo().equals(otroProducto.get().getCodigo())){
+            throw new InvalidOperationException("No se puede modificar el producto, " +
+                    "existe otro con el mismo nombre");
+        }
+        Optional<CategoriaResponse> categoriaDB =
+                categoriaService.findCategoriaById(request.getCategoriaId());
+        if(categoriaDB.isEmpty()){
+            throw new ResourceNotFoundException("No existe la categoria indicada, " +
+                    "no se puede modificar el producto");
+        }
+        Producto producto = new Producto(productoDB.get(),request);
+        Producto productoModificado = this.productoRepository.save(producto);
+        return new ProductoResponse(productoModificado);
     }
 }
