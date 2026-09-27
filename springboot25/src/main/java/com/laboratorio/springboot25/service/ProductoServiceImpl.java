@@ -84,4 +84,14 @@ public class ProductoServiceImpl implements ProductoService{
         Producto productoModificado = this.productoRepository.save(producto);
         return new ProductoResponse(productoModificado);
     }
+
+    @Override
+    public boolean deleteProducto(Integer id) {
+        Optional<ProductoResponse> productoDB = this.findProductoById(id);
+        if(productoDB.isEmpty()){
+            return false;
+        }
+        this.productoRepository.deleteById(id);
+        return true;
+    }
 }

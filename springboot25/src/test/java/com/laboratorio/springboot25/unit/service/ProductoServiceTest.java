@@ -283,6 +283,27 @@ public class ProductoServiceTest {
         verify(this.productoRepository, never()).save(any(Producto.class));
 
     }
+    @Test
+    void testDeleteProducto_ProductoDeleted() {
+        ProductoResponse productoDB = new ProductoResponse(
+                1,1,"Mouse",10.0,LocalDate.now());
+        when(this.productoRepository.findProductoById(1))
+                .thenReturn(Optional.of(productoDB));
+        boolean result = this.productoService.deleteProducto(1);
 
+        assertTrue(result);
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository).deleteById(1);
+    }
+    @Test
+    void testDeleteProducto_ProductoNotFound(){
+        when(this.productoRepository.findProductoById(anyInt()))
+                .thenReturn(Optional.empty());
+        boolean result = this.productoService.deleteProducto(1);
+
+        assertFalse(result);
+        verify(this.productoRepository).findProductoById(1);
+        verify(this.productoRepository, never()).deleteById(1);
+    }
 
 }
