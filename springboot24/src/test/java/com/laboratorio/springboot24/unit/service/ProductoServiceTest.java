@@ -140,6 +140,7 @@ class ProductoServiceTest {
         verify(this.productoRepository)
                 .findByCategoriaIdOrderByNombreAsc(anyInt());
     }
+//    ----------------CRUD TEST----------------
     @Test
     void createProductTest_ProductCreated() {
         ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
