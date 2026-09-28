@@ -240,5 +240,22 @@ class CategoriaServiceTest {
         verify(this.productoRepository, never()).countByCategoriaId(1);
         verify(this.categoriaRepository, never()).deleteById(1);
     }
+    @Test
+    void categoriaDeleteTest_HasProducts(){
+        CategoriaResponse categoriaDb = new CategoriaResponse(1,"perifericos");
+
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDb));
+        when(this.productoRepository.countByCategoriaId(1))
+                .thenReturn(2L);
+        InvalidOperationException exception = assertThrows(
+                InvalidOperationException.class,
+                ()->categoriaService.deleteCategoria(1));
+        assertEquals("No se puede eliminar la categoria, " +
+                "la categoria tiene productos asociados",exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository).countByCategoriaId(1);
+        verify(this.categoriaRepository, never()).deleteById(1);
+    }
 
 }
