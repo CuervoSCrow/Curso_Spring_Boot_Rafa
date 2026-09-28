@@ -1,6 +1,8 @@
 package com.laboratorio.springboot25.unit.service;
 
+import com.laboratorio.springboot25.dto.CategoriaRequest;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
+import com.laboratorio.springboot25.model.Categoria;
 import com.laboratorio.springboot25.repository.CategoriaRepository;
 import com.laboratorio.springboot25.repository.ProductoRepository;
 import com.laboratorio.springboot25.service.CategoriaServiceImpl;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,6 +114,26 @@ class CategoriaServiceTest {
         assertEquals(3,categorias.size());
         assertEquals(categoriasDB,categorias);
         verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
+    }
+    @Test
+    void createCategoriaTest_CategoriaCreated() {
+        CategoriaRequest request = new CategoriaRequest(
+                "perifericos");
+        Categoria categoriaNueva = new Categoria(1,"perifericos");
+
+        when(this.categoriaRepository.findCategoriaByNombre("perifericos"))
+                .thenReturn(Optional.empty());
+        when(this.categoriaRepository.save(any(Categoria.class)))
+                .thenReturn(categoriaNueva);
+
+        CategoriaResponse categoria =
+                categoriaService.createCategoria(request);
+
+        assertNotNull(categoria);
+        assertEquals(1,categoria.getId());
+        assertEquals("perifericos",categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository).save(any(Categoria.class));
     }
 
 }

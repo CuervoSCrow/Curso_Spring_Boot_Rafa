@@ -1,5 +1,6 @@
 package com.laboratorio.springboot25.service;
 
+import com.laboratorio.springboot25.dto.CategoriaRequest;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface CategoriaService {
     Optional<CategoriaResponse> findCategoriaByNombre(String nombre);
     List<CategoriaResponse> findAllOrderByNombreAsc();
     List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre);
+    CategoriaResponse createCategoria(CategoriaRequest categoria);
 }
