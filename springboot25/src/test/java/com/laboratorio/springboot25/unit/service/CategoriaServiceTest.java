@@ -2,6 +2,7 @@ package com.laboratorio.springboot25.unit.service;
 
 import com.laboratorio.springboot25.dto.CategoriaRequest;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
+import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import com.laboratorio.springboot25.model.Categoria;
 import com.laboratorio.springboot25.repository.CategoriaRepository;
 import com.laboratorio.springboot25.repository.ProductoRepository;
@@ -175,6 +176,20 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaById(anyInt());
         verify(this.categoriaRepository).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository).save(any(Categoria.class));
+    }
+    @Test
+    void categoriaUpdateTest_CategoryNotFound(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+        when(this.categoriaRepository.findCategoriaById(anyInt()))
+                .thenReturn(Optional.empty());
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                ()->{this.categoriaService.updateCategoria(1,request);});
+        assertEquals("No se puede efectuar la modificación, " +
+                "la categoria no existe",exception.getMessage());
+        verify(this.categoriaRepository).findCategoriaById(anyInt());
+        verify(this.categoriaRepository, never()).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
 
 }
