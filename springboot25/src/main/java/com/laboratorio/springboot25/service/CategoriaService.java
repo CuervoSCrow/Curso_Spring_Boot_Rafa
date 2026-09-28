@@ -12,4 +12,5 @@ public interface CategoriaService {
     List<CategoriaResponse> findAllOrderByNombreAsc();
     List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre);
     CategoriaResponse createCategoria(CategoriaRequest categoria);
+    CategoriaResponse updateCategoria(Integer id, CategoriaRequest categoria);
 }

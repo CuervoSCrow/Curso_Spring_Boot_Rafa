@@ -118,6 +118,7 @@ class CategoriaServiceTest {
         assertEquals(categoriasDB, categorias);
         verify(categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
     }
+    // ----------------CRUD TEST----------------
     @Test
     void createCategoriaTest_CategoriaCreated(){
         CategoriaRequest request =

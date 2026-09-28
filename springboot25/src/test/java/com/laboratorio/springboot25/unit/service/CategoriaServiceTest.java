@@ -151,5 +151,30 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
+    @Test
+    void categoriaUpdateTest_CategoryUpdated(){
+        CategoriaRequest request = new CategoriaRequest("periféricos");
+        CategoriaResponse categoriaDB = new
+                CategoriaResponse(1,"perifericos");
+        Categoria categoriaModificada = new
+                Categoria(1,"periféricos");
+
+        when(this.categoriaRepository.findCategoriaById(anyInt()))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.categoriaRepository.findCategoriaByNombre(anyString()))
+                .thenReturn(Optional.empty());
+        when(categoriaRepository.save(any(Categoria.class)))
+                .thenReturn(categoriaModificada);
+
+        CategoriaResponse categoria =
+                categoriaService.updateCategoria(1,request);
+
+        assertNotNull(categoria);
+        assertEquals(1,categoria.getId());
+        assertEquals("periféricos",categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaById(anyInt());
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository).save(any(Categoria.class));
+    }
 
 }
