@@ -29,4 +29,9 @@ public class CategoriaServiceImpl implements CategoriaService {
     public List<CategoriaResponse> findAllOrderByNombreAsc() {
         return this.categoriaRepository.findAllOrderByNombreAsc();
     }
+
+    @Override
+    public List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre) {
+        return this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(nombre);
+    }
 }

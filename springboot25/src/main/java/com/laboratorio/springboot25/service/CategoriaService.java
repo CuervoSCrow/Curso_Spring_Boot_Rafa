@@ -9,4 +9,5 @@ public interface CategoriaService {
     Optional<CategoriaResponse> findCategoriaById(Integer id);
     Optional<CategoriaResponse> findCategoriaByNombre(String nombre);
     List<CategoriaResponse> findAllOrderByNombreAsc();
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre);
 }

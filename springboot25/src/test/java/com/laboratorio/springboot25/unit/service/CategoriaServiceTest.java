@@ -94,5 +94,23 @@ class CategoriaServiceTest {
         assertEquals(categoriasDB,categorias);
         verify(this.categoriaRepository).findAllOrderByNombreAsc();
     }
+    @Test
+    void findByNombreContainingIgnoreCaseOrderByNombreAscTest() {
+        String infix="NiTO";
+        List<CategoriaResponse> categoriasDB=
+                List.of(
+                        new CategoriaResponse(1, "impresoras"),
+                        new CategoriaResponse(2, "monitores"),
+                        new CategoriaResponse(3, "perifericos")
+                );
+        when(this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix))
+                .thenReturn(categoriasDB);
+        List<CategoriaResponse> categorias =
+                categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
+        assertFalse(categorias.isEmpty());
+        assertEquals(3,categorias.size());
+        assertEquals(categoriasDB,categorias);
+        verify(this.categoriaRepository).findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
+    }
 
 }
