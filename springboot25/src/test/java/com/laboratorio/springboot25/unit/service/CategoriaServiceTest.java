@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,15 @@ class CategoriaServiceTest {
                 categoriaService.findCategoriaByNombre("perifericos");
         assertTrue(categoria.isPresent());
         assertEquals("perifericos",categoria.get().getNombre());
+        verify(categoriaRepository).findCategoriaByNombre("perifericos");
+    }
+    @Test
+    void findCategoriaByNombreTest_CategoriaNotFound(){
+        when(this.categoriaRepository.findCategoriaByNombre(anyString()))
+                .thenReturn(Optional.empty());
+        Optional<CategoriaResponse> categoria =
+                categoriaService.findCategoriaByNombre("perifericos");
+        assertTrue(categoria.isEmpty());
         verify(categoriaRepository).findCategoriaByNombre("perifericos");
     }
 
