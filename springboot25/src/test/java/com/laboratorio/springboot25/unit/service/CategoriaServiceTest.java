@@ -52,4 +52,18 @@ class CategoriaServiceTest {
         assertTrue(categoria.isEmpty());
         verify(categoriaRepository).findCategoriaById(1);
     }
+    @Test
+    void findCategoriaByNombreTest_CategoriaExists() {
+        CategoriaResponse response = new CategoriaResponse(
+                1,"perifericos");
+        when(this.categoriaRepository.findCategoriaByNombre("perifericos"))
+                .thenReturn(Optional.of(response));
+
+        Optional<CategoriaResponse> categoria =
+                categoriaService.findCategoriaByNombre("perifericos");
+        assertTrue(categoria.isPresent());
+        assertEquals("perifericos",categoria.get().getNombre());
+        verify(categoriaRepository).findCategoriaByNombre("perifericos");
+    }
+
 }

@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface CategoriaService {
     Optional<CategoriaResponse> findCategoriaById(Integer id);
+    Optional<CategoriaResponse> findCategoriaByNombre(String nombre);
 }
