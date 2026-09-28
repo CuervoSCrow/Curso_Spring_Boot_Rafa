@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class ProductoRepositoryTest{
+class ProductoRepositoryTest{
     @Autowired
     private ProductoRepository productoRepository;
 //    <------------------------Busquedas------------------------>
     @Test
-    public void testFindProductoById() {
+    void testFindProductoById() {
         Integer id=4;
         ProductoResponse response=
                 productoRepository.findProductoById(id).get();
@@ -27,7 +27,7 @@ public class ProductoRepositoryTest{
         assertEquals(2,response.getCategoriaId());
     }
     @Test
-    public void testFindProductoByNombre(){
+    void testFindProductoByNombre(){
         String nombre="Producto 7";
         ProductoResponse response=
                 productoRepository.findProductoByNombre(nombre).get();
@@ -35,27 +35,27 @@ public class ProductoRepositoryTest{
         assertEquals(3,response.getCategoriaId());
     }
     @Test
-    public void testFindAllOrderByNombreAsc(){
+    void testFindAllOrderByNombreAsc(){
         List<ProductoResponse> productos =
             this.productoRepository.findAllOrderByNombreAsc();
         assertEquals(9,productos.size());
     }
     @Test
-    public void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
+    void testFindByNombreContainingIgnoreCaseOrderByNombreAsc(){
         String infix = "OdUc";
         List<ProductoResponse> productos =
                 this.productoRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix);
         assertEquals(9,productos.size());
     }
     @Test
-    public void testFindByCategoriaIdOrderByNombreAsc(){
+    void testFindByCategoriaIdOrderByNombreAsc(){
         Integer categoriaId = 2;
         List<ProductoResponse> productos =
                 this.productoRepository.findByCategoriaIdOrderByNombreAsc(categoriaId);
         assertEquals(3,productos.size());
     }
     @Test
-    public void testCountByCategoriaId(){
+    void testCountByCategoriaId(){
         Integer categoriaId = 3;
         long count = this.productoRepository.countByCategoriaId(categoriaId);
         assertEquals(3,count);
