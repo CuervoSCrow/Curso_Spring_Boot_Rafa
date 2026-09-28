@@ -65,4 +65,19 @@ public class CategoriaServiceImpl implements CategoriaService {
         Categoria categoriaModificada = this.categoriaRepository.save(categoria);
         return new CategoriaResponse(categoriaModificada);
     }
+    @Override
+    public boolean deleteCategoria(Integer id) {
+        Optional<CategoriaResponse> categoriaDB =
+                this.categoriaRepository.findCategoriaById(id);
+        if(categoriaDB.isEmpty()){
+            return false;
+        }
+        long nProductos = productoRepository.countByCategoriaId(id);
+        if(nProductos>0){
+            throw new InvalidOperationException("No se puede eliminar la categoria, " +
+                    "la categoria tiene productos asociados");
+        }
+        this.categoriaRepository.deleteById(id);
+        return true;
+    }
 }

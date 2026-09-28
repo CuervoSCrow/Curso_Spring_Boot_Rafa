@@ -213,5 +213,22 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository,never()).save(any(Categoria.class));
 
     }
+    @Test
+    void categoriaDeleteTest_CategoryDeleted(){
+        CategoriaResponse categoriaDB = new CategoriaResponse(
+                1,"perifericos");
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.of(categoriaDB));
+        when(this.productoRepository.countByCategoriaId(1))
+                .thenReturn(0L);
+
+        boolean result = this.categoriaService.deleteCategoria(1);
+
+        assertTrue(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository).countByCategoriaId(1);
+        verify(this.categoriaRepository).deleteById(1);
+
+    }
 
 }
