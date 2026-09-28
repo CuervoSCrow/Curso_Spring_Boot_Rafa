@@ -6,6 +6,7 @@ import com.laboratorio.springboot25.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,5 +23,10 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     public Optional<CategoriaResponse> findCategoriaByNombre(String nombre) {
         return this.categoriaRepository.findCategoriaByNombre(nombre);
+    }
+
+    @Override
+    public List<CategoriaResponse> findAllOrderByNombreAsc() {
+        return this.categoriaRepository.findAllOrderByNombreAsc();
     }
 }
