@@ -19,8 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoriaServiceTest {
@@ -134,6 +133,23 @@ class CategoriaServiceTest {
         assertEquals("perifericos",categoria.getNombre());
         verify(this.categoriaRepository).findCategoriaByNombre(anyString());
         verify(this.categoriaRepository).save(any(Categoria.class));
+    }
+    @Test
+    void createCategoriaTest_CategoryExists(){
+        CategoriaRequest request = new CategoriaRequest("perifericos");
+        CategoriaResponse categoriaDB = new
+                CategoriaResponse(1,"perifericos");
+
+        when(this.categoriaRepository.findCategoriaByNombre("perifericos"))
+                .thenReturn(Optional.of(categoriaDB));
+        CategoriaResponse categoria =
+                categoriaService.createCategoria(request);
+
+        assertNotNull(categoria);
+        assertEquals(1,categoria.getId());
+        assertEquals("perifericos",categoria.getNombre());
+        verify(this.categoriaRepository).findCategoriaByNombre(anyString());
+        verify(this.categoriaRepository, never()).save(any(Categoria.class));
     }
 
 }
