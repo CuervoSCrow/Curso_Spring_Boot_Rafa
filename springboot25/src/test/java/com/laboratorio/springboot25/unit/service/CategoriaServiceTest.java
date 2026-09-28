@@ -29,7 +29,7 @@ class CategoriaServiceTest {
     private CategoriaServiceImpl categoriaService;
 
     @Test
-    void findCategoriaById_CategoriaExists() {
+    void findCategoriaByIdTest_CategoriaExists() {
         CategoriaResponse response = new CategoriaResponse(
                 1,
                 "perifericos");
@@ -41,6 +41,15 @@ class CategoriaServiceTest {
 
         assertTrue(categoria.isPresent());
         assertEquals("perifericos",categoria.get().getNombre());
+        verify(categoriaRepository).findCategoriaById(1);
+    }
+    @Test
+    void findCategoriaByIdTest_CategoryNotFound(){
+        when(categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.empty());
+        Optional<CategoriaResponse> categoria =
+                categoriaService.findCategoriaById(1);
+        assertTrue(categoria.isEmpty());
         verify(categoriaRepository).findCategoriaById(1);
     }
 }
