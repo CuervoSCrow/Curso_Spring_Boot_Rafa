@@ -230,5 +230,15 @@ class CategoriaServiceTest {
         verify(this.categoriaRepository).deleteById(1);
 
     }
+    @Test
+    void categoriaDeleteTest_CategoryNotFound(){
+        when(this.categoriaRepository.findCategoriaById(1))
+                .thenReturn(Optional.empty());
+        boolean result = this.categoriaService.deleteCategoria(1);
+        assertFalse(result);
+        verify(this.categoriaRepository).findCategoriaById(1);
+        verify(this.productoRepository, never()).countByCategoriaId(1);
+        verify(this.categoriaRepository, never()).deleteById(1);
+    }
 
 }
