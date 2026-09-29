@@ -187,4 +187,25 @@ public class ProductoControllerTest {
                 .andExpect(content().string("No existe la categoria indicada, " +
                         "no se puede crear el producto"));
     }
+    @Test
+    void testUpdate() throws Exception{
+        int id=1;
+        ProductoRequest request = new ProductoRequest(
+                1,"Mouse",10.0);
+        ProductoResponse producto = new ProductoResponse(
+                1,1,"Mouse",10.0,LocalDate.now());
+        when(this.productoService.updateProducto(anyInt(),any(ProductoRequest.class)))
+                .thenReturn(producto);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/productos/"+id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value(1))
+                .andExpect(jsonPath("$.nombre").value("Mouse"));
+
+
+    }
+
 }

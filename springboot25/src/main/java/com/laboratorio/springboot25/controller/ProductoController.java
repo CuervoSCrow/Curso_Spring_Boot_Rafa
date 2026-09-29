@@ -40,6 +40,7 @@ public class ProductoController {
         }
         return ResponseEntity.ok(producto);
     }
+
     @GetMapping("/findAll")
     public ResponseEntity<?> findAll(){
         List<ProductoResponse> productos = this.productoService.findAllOrderByNombreAsc();
@@ -48,6 +49,7 @@ public class ProductoController {
         }
         return ResponseEntity.ok(productos);
     }
+
     @GetMapping("/{infix}")
     public ResponseEntity<?> findByNombreContaining(
             @PathVariable String infix){
@@ -58,6 +60,7 @@ public class ProductoController {
         }
         return ResponseEntity.ok(productos);
     }
+
     @GetMapping("/categoria/{id}")
     public ResponseEntity<?> findByCategoria(
             @PathVariable Integer id){
@@ -83,7 +86,8 @@ public class ProductoController {
                     "Ha ocurrido un error inesperado");
         }
     }
-    @PutMapping
+
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @PathVariable Integer id,
             @RequestBody ProductoRequest request){
