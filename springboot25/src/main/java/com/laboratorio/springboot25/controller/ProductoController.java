@@ -105,4 +105,14 @@ public class ProductoController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id){
+        if(!this.productoService.deleteProducto(id)){
+            return ResponseEntity.status(
+                    HttpStatus.NOT_FOUND).body("No existe el producto con id: " + id);
+        }
+        return ResponseEntity.ok(
+                "Se ha eliminado correctamente el producto con id: "+id);
+    }
+
 }

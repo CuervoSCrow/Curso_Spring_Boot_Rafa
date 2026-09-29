@@ -5,6 +5,7 @@ import com.laboratorio.springboot25.controller.ProductoController;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
 import com.laboratorio.springboot25.dto.ProductoRequest;
 import com.laboratorio.springboot25.dto.ProductoResponse;
+import com.laboratorio.springboot25.exception.InvalidOperationException;
 import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import com.laboratorio.springboot25.service.ProductoService;
 import org.junit.jupiter.api.Test;
@@ -206,6 +207,52 @@ public class ProductoControllerTest {
                 .andExpect(jsonPath("$.nombre").value("Mouse"));
 
 
+    }
+    @Test
+    void testUpdateNotFound() throws Exception{
+        int id = 1;
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        when(this.productoService.updateProducto(anyInt(),any(ProductoRequest.class)))
+                .thenThrow(new ResourceNotFoundException("No existe el producto"));
+        ObjectMapper objectMapper= new ObjectMapper();
+        this.mockMvc.perform(put("/api/productos/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No existe el producto"));
+    }
+    @Test
+    void testUpdateDuplicateName() throws Exception{
+        int id=1;
+        ProductoRequest request = new ProductoRequest(
+                1,"Mouse",10.0);
+        when(this.productoService.updateProducto(anyInt(),any(ProductoRequest.class)))
+                .thenThrow(new InvalidOperationException("Existe un producto con el mismo nombre"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.mockMvc.perform(put("/api/productos/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Existe un producto con el mismo nombre"));
+    }
+    @Test
+    void testDelete() throws Exception{
+        int id = 1;
+        when(this.productoService.deleteProducto(id))
+                .thenReturn(true);
+        this.mockMvc.perform(delete("/api/productos/"+id))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        "Se ha eliminado correctamente el producto con id: "+id));
+    }
+    @Test
+    void testDeleteNotFound() throws Exception{
+        int id = 1;
+        when(this.productoService.deleteProducto(id))
+                .thenReturn(false);
+        this.mockMvc.perform(delete("/api/productos/"+id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No existe el producto con id: "+id));
     }
 
 }
