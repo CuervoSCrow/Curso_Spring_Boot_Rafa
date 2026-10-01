@@ -1,0 +1,152 @@
+package com.laboratorio.springboot25.unit.controller;
+
+import com.laboratorio.springboot25.controller.CategoriaController;
+import com.laboratorio.springboot25.dto.CategoriaRequest;
+import com.laboratorio.springboot25.dto.CategoriaResponse;
+import com.laboratorio.springboot25.service.CategoriaService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(controllers = CategoriaController.class)
+public class CategoriaControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private CategoriaService categoriaService;
+
+    @Test
+    void testFindCategoriaById() throws Exception {
+        int id=1;
+        CategoriaResponse categoria = new CategoriaResponse(
+                id,"Categoria 1");
+        when(this.categoriaService.findCategoriaById(id))
+                .thenReturn(Optional.of(categoria));
+
+        this.mockMvc.perform(get("/api/categorias/find")
+                    .param("id", String.valueOf(id)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.nombre").value("Categoria 1"));
+
+    }
+    @Test
+    void testFindCategoriaByNombre() throws Exception{
+        String nombre = "Producto 1";
+        CategoriaResponse response = new CategoriaResponse(1, nombre);
+        when(this.categoriaService.findCategoriaByNombre(nombre))
+                .thenReturn(Optional.of(response));
+
+        this.mockMvc.perform(get("/api/categorias/find")
+                    .param("nombre",nombre))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nombre").value("Producto 1"));
+    }
+    @Test
+    void testFindCategoriaNotFound() throws Exception{
+        int id = 1;
+        when(this.categoriaService.findCategoriaById(id))
+                .thenReturn(Optional.empty());
+        this.mockMvc.perform(get("/api/categorias/find")
+                    .param("id", String.valueOf(id)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No se ha encontrado la categoria buscada"));
+    }
+    @Test
+    void testFindCategoriaWithoutParams() throws Exception{
+        this.mockMvc.perform(get("/api/categorias/find"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+    @Test
+    void testFindCategoriaWithTwoParams() throws Exception{
+        this.mockMvc.perform(get("/api/categorias/find")
+                    .param("id","1")
+                    .param("nombre","Categoria 1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+    @Test
+    void testFindAll() throws Exception{
+        List<CategoriaResponse> categorias = List.of(
+            new CategoriaResponse(1,"Categoria 1"),
+            new CategoriaResponse(2,"Categoria 2"),
+            new CategoriaResponse(3,"Categoria 3")
+        );
+        when(this.categoriaService.findAllOrderByNombreAsc()).thenReturn(categorias);
+
+        this.mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray());
+    }
+    @Test
+    void testFindAllNotContent() throws Exception{
+        when(this.categoriaService.findAllOrderByNombreAsc()).thenReturn(List.of());
+        this.mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    void testFindByNombreContaining() throws Exception{
+        String infix="Tego";
+        List<CategoriaResponse> categorias = List.of(
+                new CategoriaResponse(1,"Categoria1"),
+                new CategoriaResponse(2,"Categoria2")
+        );
+        when(this.categoriaService.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix))
+                .thenReturn(categorias);
+        this.mockMvc.perform(get("/api/categorias/"+infix))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray());
+    }
+//    --------------- CRUD ---------------
+    @Test
+    void testCreate() throws Exception{
+        CategoriaRequest request = new CategoriaRequest("Categoria nueva");
+        CategoriaResponse categoria = new CategoriaResponse(1,"Categoria nueva");
+        when(this.categoriaService.createCategoria(any(CategoriaRequest.class)))
+                .thenReturn(categoria);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(post("/api/categorias")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nombre").value("Categoria nueva"));
+    }
+    @Test
+    void testUpdate() throws Exception{
+        int id=1;
+        CategoriaRequest request = new CategoriaRequest("categoria modificada");
+        CategoriaResponse categoria = new CategoriaResponse(id,"categoria modificada");
+        when(this.categoriaService.updateCategoria(anyInt(),any(CategoriaRequest.class)))
+                .thenReturn(categoria);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/categorias/"+id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.nombre").value("categoria modificada"));
+    }
+}
