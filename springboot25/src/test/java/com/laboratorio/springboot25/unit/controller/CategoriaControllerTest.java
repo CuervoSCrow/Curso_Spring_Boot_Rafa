@@ -182,4 +182,17 @@ public class CategoriaControllerTest {
                         "Existe una categoria con el mismo nombre"));
 
     }
+    @Test
+    void testDelete() throws Exception{
+        int id = 1;
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenReturn(true);
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Se ha eliminado " +
+                        "correctamente la categoria con id: " + id));
+    }
+    
+
+    }
 }

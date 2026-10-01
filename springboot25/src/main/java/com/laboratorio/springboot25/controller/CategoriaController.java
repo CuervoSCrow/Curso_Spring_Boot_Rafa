@@ -84,6 +84,23 @@ public class CategoriaController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id){
+        try{
+            if(!this.categoriaService.deleteCategoria(id)){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No existe una categoria con id: "+id);
+            }
+            return ResponseEntity.ok("Se ha eliminado " +
+                    "correctamente la categoria con id: "+id);
+        }catch(InvalidOperationException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch(Exception e){
+            return ResponseEntity.internalServerError()
+                    .body("Ha ocurrido un error inesperado");
+        }
+    }
+
 
 
 }
