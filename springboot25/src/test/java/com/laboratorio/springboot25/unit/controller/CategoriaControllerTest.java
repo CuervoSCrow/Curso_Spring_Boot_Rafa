@@ -192,7 +192,24 @@ public class CategoriaControllerTest {
                 .andExpect(content().string("Se ha eliminado " +
                         "correctamente la categoria con id: " + id));
     }
-    
+    @Test
+    void testDeleteNotFounc() throws Exception{
+        int id = 1;
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenReturn(false);
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No existe una categoria con id: " + id));
 
+    }
+    @Test
+    void testDeleteWithProductos() throws Exception{
+        int id =1;
+        when(this.categoriaService.deleteCategoria(anyInt()))
+                .thenThrow(new InvalidOperationException
+                        ("La categoria tiene productos"));
+        this.mockMvc.perform(delete("/api/categorias/"+id))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La categoria tiene productos"));
     }
 }
