@@ -3,6 +3,8 @@ package com.laboratorio.springboot25.unit.controller;
 import com.laboratorio.springboot25.controller.CategoriaController;
 import com.laboratorio.springboot25.dto.CategoriaRequest;
 import com.laboratorio.springboot25.dto.CategoriaResponse;
+import com.laboratorio.springboot25.exception.InvalidOperationException;
+import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import com.laboratorio.springboot25.service.CategoriaService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,5 +150,36 @@ public class CategoriaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.nombre").value("categoria modificada"));
+    }
+    @Test
+    void testUpdateNotFound() throws Exception{
+        int id = 1;
+        CategoriaRequest request = new CategoriaRequest("Categoria modificada");
+        when(this.categoriaService.updateCategoria(anyInt(),any(CategoriaRequest.class)))
+                .thenThrow(new ResourceNotFoundException("Categoria no existe"));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/categorias/"+id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Categoria no existe"));
+    }
+    @Test
+    void testUpdateDuplicatedName() throws Exception {
+        int id = 1;
+        CategoriaRequest request = new CategoriaRequest("Categoria modificada");
+        when(this.categoriaService.updateCategoria(eq(id),any(CategoriaRequest.class)))
+                .thenThrow(new InvalidOperationException("" +
+                        "Existe una categoria con el mismo nombre"));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/categorias/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(
+                        "Existe una categoria con el mismo nombre"));
+
     }
 }
