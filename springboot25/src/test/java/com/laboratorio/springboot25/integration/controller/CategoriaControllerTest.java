@@ -80,6 +80,22 @@ class CategoriaControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
     }
-    
+    @Test
+    void testFindByNombreContaining() throws Exception{
+        String infix="Tego";
 
+        this.mockMvc.perform(get("/api/categorias/"+infix))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+    @Test
+    void testFindByNombreContainingNotContent() throws  Exception{
+        String infix="texto";
+
+        this.mockMvc.perform(get("/api/categorias/"+infix))
+                .andExpect(status().isNoContent());
+
+    }
 }
