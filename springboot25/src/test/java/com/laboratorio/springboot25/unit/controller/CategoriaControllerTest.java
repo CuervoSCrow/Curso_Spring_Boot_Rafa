@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = CategoriaController.class)
-public class CategoriaControllerTest {
+class CategoriaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
