@@ -25,6 +25,8 @@ class CategoriaServiceTest {
     @Autowired
     private CategoriaService categoriaService;
 
+    private static Integer createId;
+
 //    ------------ BUSQUEDAS ------------
     @Test
     @Order(1)
@@ -82,6 +84,7 @@ class CategoriaServiceTest {
     void createCategoriaTest_CategoryCreated() {
         CategoriaRequest request = new CategoriaRequest("Categoria 4");
         CategoriaResponse categoria = categoriaService.createCategoria(request);
+        createId = categoria.getId();
         assertNotNull(categoria);
         assertEquals("Categoria 4", categoria.getNombre());
         assertTrue(categoria.getId()>3);
@@ -99,19 +102,19 @@ class CategoriaServiceTest {
     @Test
     @Order(9)
     void updateCategoriaTest_CategoryUpdated() {
-        Integer id = 4;
+        Integer id = createId;
         CategoriaRequest request = new CategoriaRequest("Categoria 4");
         CategoriaResponse categoria = categoriaService.updateCategoria(id, request);
         assertNotNull(categoria);
         assertEquals("Categoria 4", categoria.getNombre());
-        assertEquals(4, categoria.getId());
+        assertEquals(createId, categoria.getId());
     }
     @Test
     @Order(10)
     void updateCategoriaTest_NotFound(){
-        Integer id = 6;
+        Integer id = 16;
         CategoriaRequest request =
-                new CategoriaRequest("Categoria 6");
+                new CategoriaRequest("Categoria 16");
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
                 () -> categoriaService.updateCategoria(id, request));
@@ -135,14 +138,14 @@ class CategoriaServiceTest {
     @Test
     @Order(12)
     void deleteCategoria_CategoriaDelete(){
-        Integer id = 4;
+        Integer id = createId;
         boolean result = categoriaService.deleteCategoria(id);
         assertTrue(result);
     }
     @Test
     @Order(13)
     void deleteCategoria_CategoryNotFound(){
-        Integer id = 6;
+        Integer id = createId;
         boolean result = categoriaService.deleteCategoria(id);
         assertFalse(result);
     }
