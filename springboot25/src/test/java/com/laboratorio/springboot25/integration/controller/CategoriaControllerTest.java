@@ -47,4 +47,20 @@ class CategoriaControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.nombre").value(nombre));
     }
+    @Test
+    void testFindCategoriaNotFound() throws Exception{
+        int id = 10;
+
+        this.mockMvc.perform(get("/api/categorias/find")
+                        .param("id", String.valueOf(id)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No se ha encontrado la categoria buscada"));
+    }
+    @Test
+    void testFindCategoriaWithoutParams() throws Exception{
+        this.mockMvc.perform(get("/api/categorias/find"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+    
 }
