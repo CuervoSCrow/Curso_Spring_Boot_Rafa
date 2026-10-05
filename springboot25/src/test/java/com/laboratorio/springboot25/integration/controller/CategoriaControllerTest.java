@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -62,5 +63,23 @@ class CategoriaControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("La busqueda debe tener un parametro"));
     }
+    @Test
+    void testFindCategoriaWithTwoParams() throws Exception{
+        this.mockMvc.perform(get("/api/categorias/find")
+                        .param("id","1")
+                        .param("nombre","Categoria 1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+    @Test
+    void testFindAll() throws Exception{
+
+        this.mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
     
+
 }
