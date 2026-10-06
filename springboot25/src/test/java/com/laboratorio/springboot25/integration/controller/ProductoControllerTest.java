@@ -102,6 +102,34 @@ public class ProductoControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(9));
     }
+    @Test
+    @Order(8)
+    void testFindByNombreContainingNotContent()throws Exception{
+        String infix="TegO";
+        this.mockMvc.perform(get("/api/productos/{infix}",infix))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    @Order(9)
+    void testFindByCategoria() throws  Exception{
+        int id = 1;
+        this.mockMvc.perform(get("/api/productos/categoria/{id}",id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray());
+    }
+    @Test
+    @Order(10)
+    void testFindCategoriaNotFound() throws  Exception{
+        int id = 10;
+
+        this.mockMvc.perform(get("/api/productos/categoria/{id}",id))
+                .andExpect(status().isNoContent());
+    }
+//    @Test
+//    @Order(11)
+
+
 
 
 }
