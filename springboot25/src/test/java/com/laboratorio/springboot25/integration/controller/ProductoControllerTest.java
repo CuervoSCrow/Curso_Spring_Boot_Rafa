@@ -1,5 +1,6 @@
 package com.laboratorio.springboot25.integration.controller;
 
+import com.laboratorio.springboot25.dto.ProductoRequest;
 import com.laboratorio.springboot25.dto.ProductoResponse;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -11,13 +12,18 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
+
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -126,8 +132,26 @@ public class ProductoControllerTest {
         this.mockMvc.perform(get("/api/productos/categoria/{id}",id))
                 .andExpect(status().isNoContent());
     }
-//    @Test
-//    @Order(11)
+    @Test
+    @Order(11)
+    void testCreate() throws Exception{
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        MvcResult result = this.mockMvc.perform(post("/api/productos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").value(greaterThan(9)))
+                .andExpect(jsonPath("$.nombre").value("Mouse"))
+                .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        ProductoResponse response = objectMapper.readValue(responseBody, ProductoResponse.class);
+        createId = response.getCodigo();
+
+
+    }
 
 
 
