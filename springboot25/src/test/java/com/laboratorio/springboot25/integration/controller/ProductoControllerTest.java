@@ -73,9 +73,22 @@ public class ProductoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("La busqueda debe tener un parametro"));
     }
+    @Test
+    @Order(5)
+    void testFindProductosWithOutParams() throws Exception{
+        this.mockMvc.perform(get("/api/productos/find"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+    @Test
+    @Order(6)
+    void testFindAll() throws Exception{
 
-
-
-
+        this.mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
 
 }
