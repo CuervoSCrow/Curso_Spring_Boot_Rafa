@@ -82,7 +82,7 @@ public class ProductoControllerTest {
     void testFindProductoWithTwoParams() throws Exception{
         this.mockMvc.perform(get("/api/productos/find")
                     .param("id","1")
-                    .param("nombre","Mouse"))
+                    .param("nombre","Producto 1"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("La busqueda debe tener un parametro"));
     }

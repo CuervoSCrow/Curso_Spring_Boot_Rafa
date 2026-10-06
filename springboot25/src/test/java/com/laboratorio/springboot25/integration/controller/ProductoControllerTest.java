@@ -54,6 +54,26 @@ public class ProductoControllerTest {
                 .andExpect(jsonPath("$.codigo").value(1))
                 .andExpect(jsonPath("$.nombre").value("Producto 1"));
     }
+    @Test
+    @Order(3)
+    void testFindProductoNotFound() throws Exception{
+        String nombre = "Mouse";
+
+        this.mockMvc.perform(get("/api/productos/find")
+                        .param("nombre", nombre))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No se ha encontrado el producto buscado"));
+    }
+    @Test
+    @Order(4)
+    void testFindProductoWithTwoParams() throws Exception{
+        this.mockMvc.perform(get("/api/productos/find")
+                        .param("id","1")
+                        .param("nombre","Mouse"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("La busqueda debe tener un parametro"));
+    }
+
 
 
 
