@@ -2,6 +2,7 @@ package com.laboratorio.springboot25.integration.controller;
 
 import com.laboratorio.springboot25.dto.ProductoRequest;
 import com.laboratorio.springboot25.dto.ProductoResponse;
+import com.laboratorio.springboot25.exception.InvalidOperationException;
 import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -185,16 +186,16 @@ public class ProductoControllerTest {
     @Test
     @Order(14)
     void testUpdate() throws Exception{
-        int id=1;
+        int id=createId;
         ProductoRequest request = new ProductoRequest(
-                1,"Mouse",10.0);
+                1,"Mouse vertical",15.0);
         ObjectMapper objectMapper = new ObjectMapper();
 
         this.mockMvc.perform(put("/api/productos/"+id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.codigo").value(1))
+                .andExpect(jsonPath("$.codigo").value(id))
                 .andExpect(jsonPath("$.nombre").value("Mouse vertical"));
 
 
@@ -213,6 +214,41 @@ public class ProductoControllerTest {
                 .andExpect(content().string("No se puede efectuar la modificacion, " +
                         "el producto no existe"));
     }
+    @Test
+    @Order(16)
+    void testUpdateDuplicateName() throws Exception{
+        int id=createId;
+        ProductoRequest request = new ProductoRequest(
+                1,"Producto 2",10.0);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.mockMvc.perform(put("/api/productos/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("No se puede modificar el producto, " +
+                        "existe otro con el mismo nombre"));
+    }
+    @Test
+    @Order(17)
+    void testDelete() throws Exception{
+        int id = createId;
+
+        this.mockMvc.perform(delete("/api/productos/"+id))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        "Se ha eliminado correctamente el producto con id: "+id));
+    }
+    @Test
+    @Order(18)
+    void testDeleteNotFound() throws Exception{
+        int id = 15;
+
+        this.mockMvc.perform(delete("/api/productos/"+id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No existe el producto con id: "+id));
+    }
+
 
 
 
