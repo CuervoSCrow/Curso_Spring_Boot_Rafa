@@ -2,6 +2,7 @@ package com.laboratorio.springboot25.integration.controller;
 
 import com.laboratorio.springboot25.dto.ProductoRequest;
 import com.laboratorio.springboot25.dto.ProductoResponse;
+import com.laboratorio.springboot25.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -152,6 +154,35 @@ public class ProductoControllerTest {
 
 
     }
+    @Test
+    @Order(12)
+    void testCreate_ReturnExisting() throws Exception{
+        ProductoRequest request = new ProductoRequest(1,"Producto 2",10.0);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(post("/api/productos")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").value(2))
+                .andExpect(jsonPath("$.nombre").value("Producto 2"));
+    }
+    @Test
+    @Order(13)
+    void testCreateInexistingProducto() throws Exception{
+        ProductoRequest request = new ProductoRequest(
+                5,"Teclado",10.0);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(post("/api/productos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("No existe la categoria indicada, " +
+                        "no se puede crear el producto"));
+    }
+    
 
 
 
