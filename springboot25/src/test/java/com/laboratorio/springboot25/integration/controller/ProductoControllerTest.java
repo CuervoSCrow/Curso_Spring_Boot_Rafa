@@ -23,9 +23,9 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -182,7 +182,38 @@ public class ProductoControllerTest {
                 .andExpect(content().string("No existe la categoria indicada, " +
                         "no se puede crear el producto"));
     }
-    
+    @Test
+    @Order(14)
+    void testUpdate() throws Exception{
+        int id=1;
+        ProductoRequest request = new ProductoRequest(
+                1,"Mouse",10.0);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/productos/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value(1))
+                .andExpect(jsonPath("$.nombre").value("Mouse vertical"));
+
+
+    }
+    @Test
+    @Order(15)
+    void testUpdateNotFound() throws Exception{
+        int id = 15;
+        ProductoRequest request = new ProductoRequest(1,"Mouse",10.0);
+        ObjectMapper objectMapper= new ObjectMapper();
+
+        this.mockMvc.perform(put("/api/productos/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No se puede efectuar la modificacion, " +
+                        "el producto no existe"));
+    }
+
 
 
 
