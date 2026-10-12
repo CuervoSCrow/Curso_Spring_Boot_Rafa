@@ -32,4 +32,12 @@ public interface CategoriaRepository extends
             FROM Categoria c
             """)
     List<CategoriaResponse> findAllCategoria(Sort sort);
+    @Query("""
+            SELECT new com.laboratorio.springboot25.dto.CategoriaResponse
+            (c.id, c.nombre)
+            FROM Categoria c
+            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+            """)
+    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
+            @Param("nombre") String nombre);
 }

@@ -29,4 +29,8 @@ public class CategoriaServiceImpl implements CategoriaService{
         Sort sort = Sort.by("nombre").ascending();
         return this.categoriaRepository.findAllCategoria(sort);
     }
+    @Override
+    public List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre) {
+        return this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(nombre);
+    }
 }
