@@ -36,8 +36,8 @@ public interface CategoriaRepository extends
             SELECT new com.laboratorio.springboot26.dto.CategoriaResponse
             (c.id, c.nombre)
             FROM Categoria c
-            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:nombre,'%'))
+            WHERE UPPER(c.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
             """)
-    List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(
-            @Param("nombre") String nombre);
+    List<CategoriaResponse> findByNombreContainingIgnoreCase(
+            @Param("infix") String infix, Sort sort);
 }

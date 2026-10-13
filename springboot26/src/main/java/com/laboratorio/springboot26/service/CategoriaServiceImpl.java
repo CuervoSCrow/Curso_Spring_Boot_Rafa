@@ -30,7 +30,11 @@ public class CategoriaServiceImpl implements CategoriaService{
         return this.categoriaRepository.findAllCategoria(sort);
     }
     @Override
-    public List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre) {
-        return this.categoriaRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(nombre);
+    public List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String infix) {
+        Sort.Order order = Sort.Order.by("nombre")
+                .with(Sort.Direction.ASC)
+                .ignoreCase();
+        Sort sort = Sort.by(order);
+        return this.categoriaRepository.findByNombreContainingIgnoreCase(infix,sort);
     }
 }
