@@ -100,7 +100,4 @@ public class CategoriaController {
                     .body("Ha ocurrido un error inesperado");
         }
     }
-
-
-
 }

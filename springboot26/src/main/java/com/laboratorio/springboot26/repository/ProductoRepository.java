@@ -25,5 +25,6 @@ public interface ProductoRepository extends
             WHERE p.nombre = :nombre
             """)
     Optional<ProductoResponse> findProductoByNombre(@Param("nombre") String nombre);
+    long countByCategoriaId(Integer categoriaId);
 }
 
