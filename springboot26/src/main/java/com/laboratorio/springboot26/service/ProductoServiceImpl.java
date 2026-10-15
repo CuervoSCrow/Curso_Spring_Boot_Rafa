@@ -24,7 +24,7 @@ public class ProductoServiceImpl implements ProductoService {
         return this.productoRepository.findProductoByNombre(nombre);
     }
     @Override
-    public List<ProductoResponse> findAllProductos() {
+    public List<ProductoResponse> findAllProductosAsc() {
         Sort.Order order = Sort.Order.by("nombre")
                 .with(Sort.Direction.ASC)
                 .ignoreCase();
@@ -32,6 +32,22 @@ public class ProductoServiceImpl implements ProductoService {
                 .with(Sort.Direction.ASC);
         Sort sort = Sort.by(order, order2);
         return this.productoRepository.findAllProductos(sort);
+    }
+    @Override
+    public List<ProductoResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String infix) {
+        Sort.Order order = Sort.Order.by("nombre")
+                .with(Sort.Direction.ASC)
+                .ignoreCase();
+        Sort sort = Sort.by(order);
+
+        return this.productoRepository.findByNombreContainingIgnoreCaseOrderByNombreAsc(infix,sort);
+    }
+    @Override
+    public List<ProductoResponse> findByCategoriaId(Integer categoriaId) {
+        Sort sort = Sort.by(Sort.Direction.ASC,"nombre")
+                .and(Sort.by(Sort.Direction.ASC,"precio"));
+
+        return this.productoRepository.findByCategoriaId(categoriaId, sort);
     }
 
 
