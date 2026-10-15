@@ -2,6 +2,8 @@ package com.laboratorio.springboot26.controller;
 
 import com.laboratorio.springboot26.dto.CategoriaRequest;
 import com.laboratorio.springboot26.dto.CategoriaResponse;
+import com.laboratorio.springboot26.exception.InvalidOperationException;
+import com.laboratorio.springboot26.exception.ResourceNotFoundException;
 import com.laboratorio.springboot26.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
 
@@ -65,5 +67,24 @@ public class CategoriaController {
         CategoriaResponse categoria = categoriaService.createCategoria(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoria);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id,
+            @RequestBody CategoriaRequest request){
+        try{
+            CategoriaResponse categoria =
+                    categoriaService.updateCategoria(id, request);
+            return ResponseEntity.ok(categoria);
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch(InvalidOperationException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(
+                    "Ha ocurrido un error inesperado");
+        }
+    }
+
+    
 
 }

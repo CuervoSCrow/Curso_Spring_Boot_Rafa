@@ -2,6 +2,8 @@ package com.laboratorio.springboot26.service;
 
 import com.laboratorio.springboot26.dto.CategoriaRequest;
 import com.laboratorio.springboot26.dto.CategoriaResponse;
+import com.laboratorio.springboot26.exception.InvalidOperationException;
+import com.laboratorio.springboot26.exception.ResourceNotFoundException;
 import com.laboratorio.springboot26.model.Categoria;
 import com.laboratorio.springboot26.repository.CategoriaRepository;
 import com.laboratorio.springboot26.repository.ProductoRepository;
@@ -50,5 +52,25 @@ public class CategoriaServiceImpl implements CategoriaService{
         Categoria categoriaNueva = this.categoriaRepository.save(categoria);
         return new CategoriaResponse(categoriaNueva);
     }
+    @Override
+    public CategoriaResponse updateCategoria(Integer id, CategoriaRequest request) {
+        Optional<CategoriaResponse> categoriaDB=
+                this.categoriaRepository.findCategoriaById(id);
+        if(categoriaDB.isEmpty()){
+            throw new ResourceNotFoundException("No se puede efectuar la modificacion, " +
+                    "la categoria no existe");
+        }
+        Optional<CategoriaResponse> otraCategoria =
+                this.categoriaRepository.findCategoriaByNombre(request.getNombre());
+        if(otraCategoria.isPresent() &&
+            !categoriaDB.get().getId().equals(otraCategoria.get().getId())){
+            throw new InvalidOperationException("No se puede efectuar la modificacion, " +
+                    "el nombre de la categoria ya existe");
+        }
+        Categoria categoria = new Categoria(id,request.getNombre());
+        Categoria categoriaModificada = this.categoriaRepository.save(categoria);
+        return new CategoriaResponse(categoriaModificada);
+    }
+
 
 }
