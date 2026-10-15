@@ -1,5 +1,6 @@
 package com.laboratorio.springboot26.controller;
 
+import com.laboratorio.springboot26.dto.CategoriaRequest;
 import com.laboratorio.springboot26.dto.CategoriaResponse;
 import com.laboratorio.springboot26.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,12 @@ public class CategoriaController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(categorias);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CategoriaRequest request){
+        CategoriaResponse categoria = categoriaService.createCategoria(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoria);
     }
 
 }

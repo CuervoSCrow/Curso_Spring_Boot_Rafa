@@ -1,6 +1,8 @@
 package com.laboratorio.springboot26.service;
 
+import com.laboratorio.springboot26.dto.CategoriaRequest;
 import com.laboratorio.springboot26.dto.CategoriaResponse;
+import com.laboratorio.springboot26.model.Categoria;
 import com.laboratorio.springboot26.repository.CategoriaRepository;
 import com.laboratorio.springboot26.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +39,16 @@ public class CategoriaServiceImpl implements CategoriaService{
         Sort sort = Sort.by(order);
         return this.categoriaRepository.findByNombreContainingIgnoreCase(infix,sort);
     }
+    @Override
+    public CategoriaResponse createCategoria(CategoriaRequest request) {
+        Optional<CategoriaResponse> categoriaDB =
+                this.categoriaRepository.findCategoriaByNombre(request.getNombre());
+        if(categoriaDB.isPresent()){
+            return categoriaDB.get();
+        }
+        Categoria categoria = new Categoria();
+        Categoria categoriaNueva = this.categoriaRepository.save(categoria);
+        return new CategoriaResponse(categoriaNueva);
+    }
+
 }

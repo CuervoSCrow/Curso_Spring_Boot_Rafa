@@ -1,5 +1,6 @@
 package com.laboratorio.springboot26.service;
 
+import com.laboratorio.springboot26.dto.CategoriaRequest;
 import com.laboratorio.springboot26.dto.CategoriaResponse;
 import org.springframework.data.domain.Sort;
 
@@ -11,4 +12,5 @@ public interface CategoriaService {
     Optional<CategoriaResponse> findCategoriaByNombre(String nombre);
     List<CategoriaResponse> findAllCategoria();
     List<CategoriaResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre);
+    CategoriaResponse createCategoria(CategoriaRequest request);
 }
