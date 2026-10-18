@@ -1,5 +1,6 @@
 package com.laboratorio.springboot26.service;
 
+import com.laboratorio.springboot26.dto.ProductoRequest;
 import com.laboratorio.springboot26.dto.ProductoResponse;
 
 
@@ -12,5 +13,8 @@ public interface ProductoService {
     List<ProductoResponse> findAllProductosAsc();
     List<ProductoResponse> findByNombreContainingIgnoreCaseOrderByNombreAsc(String infix);
     List<ProductoResponse> findByCategoriaId(Integer categoriaId);
+    ProductoResponse createProducto(ProductoRequest request);
+    ProductoResponse updateProducto(Integer id, ProductoRequest request);
+    boolean deleteProducto(Integer id);
 
 }

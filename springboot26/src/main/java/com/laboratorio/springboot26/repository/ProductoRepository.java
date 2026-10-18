@@ -34,7 +34,7 @@ public interface ProductoRepository extends
             """)
     List<ProductoResponse> findAllProductos(Sort sort);
     @Query("""
-            SELECT new laboratorio.springboot26.dto.ProductoResponse
+            SELECT new com.laboratorio.springboot26.dto.ProductoResponse
             (p.id,p.categoriaId, p.nombre, p.precio,p.fechaIngreso)
             FROM Producto p
             WHERE UPPER(p.nombre) LIKE UPPER(CONCAT('%',:infix,'%'))
