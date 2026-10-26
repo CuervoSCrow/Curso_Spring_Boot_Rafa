@@ -5,11 +5,9 @@ import com.laboratorio.springboot27.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +36,37 @@ public class ProductoController {
                     .body("No se ha encontrado el producto buscado.");
         }
         return ResponseEntity.ok(producto);
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<?>findAll(){
+        List<ProductoResponse> productos = this.productoService.findAllProducto();
+        if(productos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("{infix}")
+    public ResponseEntity<?>findByNombreContaining(
+            @PathVariable String infix){
+        List<ProductoResponse> productos =
+                this.productoService.findByNombreContainingIgnoreCase(infix);
+        if(productos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/categoria/{id}")
+    public ResponseEntity<?> findByCategoria(
+            @PathVariable Integer id){
+        List<ProductoResponse> productos =
+            this.productoService.findByCategoriaId(id);
+        if(productos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productos);
     }
 
 
