@@ -1,5 +1,6 @@
 package com.laboratorio.springboot27.service;
 
+import com.laboratorio.springboot27.dto.ProductoRequest;
 import com.laboratorio.springboot27.dto.ProductoResponse;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface ProductoService {
     List<ProductoResponse> findAllProducto();
     List<ProductoResponse> findByNombreContainingIgnoreCase(String infix);
     List<ProductoResponse> findByCategoriaId(Integer id);
+    ProductoResponse createProducto(ProductoRequest producto);
+
 }

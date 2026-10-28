@@ -1,5 +1,6 @@
 package com.laboratorio.springboot27.model;
 
+import com.laboratorio.springboot27.dto.ProductoRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,13 @@ public class Producto {
     @JoinColumn(name="categoria_id",nullable = false,
                 insertable = false,updatable = false)
     private Categoria categoria;
+
+    public Producto(ProductoRequest request){
+        this.categoriaId = request.getCategoriaId();
+        this.nombre = request.getNombre();
+        this.precio = request.getPrecio();
+        this.fechaIngreso = LocalDate.now(ZONE);
+    }
 
     @Override
     public String toString() {
